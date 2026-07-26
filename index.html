@@ -8,11 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Georgia&family=Times+New+Roman&family=Caveat:wght@400;700&family=Pacifico&family=Comic+Neue:wght@400;700&family=Russo+One&family=Inter:wght@300;400;700&family=Manrope:wght@300;400;700&family=Fira+Sans:wght@300;400;700&family=Cormorant+Garamond:wght@400;600;700&family=Play:wght@400;700&family=Exo+2:wght@300;400;700&family=Cuprum:wght@400;700&family=Philosopher:wght@400;700&family=Alegreya:wght@400;700&family=Bitter:wght@400;700&family=Cabin:wght@400;700&family=DM+Serif+Display:wght@400;700&family=EB+Garamond:wght@400;700&family=Josefin+Sans:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=Oswald:wght@400;700&family=Poppins:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        /* ===== Все стили остаются без изменений ===== */
+        /* ===== Базовые стили (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Roboto', sans-serif;
@@ -602,9 +599,18 @@
             <details open>
                 <summary>📁 Фон</summary>
                 <div class="content">
+                    <!-- НОВОЕ: категории и фоны -->
                     <label>Категория фона</label>
                     <select id="bgCategorySelect">
-                        <!-- Заполняется из Firebase -->
+                        <option value="bath">Баня</option>
+                        <option value="restaurant">Ресторан</option>
+                        <option value="cafe">Кафе</option>
+                        <option value="shaurma">Шаурмичная</option>
+                        <option value="japanese">Японская кухня</option>
+                        <option value="italian">Итальянская кухня</option>
+                        <option value="russian">Русская кухня</option>
+                        <option value="pub">Паб</option>
+                        <option value="canteen">Столовая</option>
                     </select>
 
                     <label>Готовые фоны</label>
@@ -618,9 +624,254 @@
                 </div>
             </details>
 
-            <!-- Остальные секции (Блоки, Шаблоны, Оформление, Редактирование, Экспорт) - БЕЗ ИЗМЕНЕНИЙ -->
-            <!-- ... (вставьте сюда весь остальной HTML-код панели без изменений) ... -->
-            <!-- Для краткости я пропускаю, но в реальном файле он должен быть полностью -->
+            <!-- Блоки -->
+            <details open>
+                <summary>➕ Блоки</summary>
+                <div class="content">
+                    <div class="btn-group">
+                        <button class="btn btn-add" id="addBlockBtn">+ Блюдо</button>
+                        <button class="btn btn-add" id="addTitleBtn" style="background:#6a1b9a;">+ Заголовок</button>
+                        <button class="btn btn-add" id="addLogoBtn" style="background:#e67e22;">+ Логотип</button>
+                    </div>
+                    <label>🏷️ Метка для нового блока</label>
+                    <select id="badgeSelect">
+                        <option value="">Без метки</option>
+                        <option value="🔥 Хит">🔥 Хит</option>
+                        <option value="✨ Новинка">✨ Новинка</option>
+                        <option value="⭐ Бестселлер">⭐ Бестселлер</option>
+                        <option value="🌱 Веган">🌱 Веган</option>
+                        <option value="🔻 Скидка">🔻 Скидка</option>
+                        <option value="🌶️ Острое">🌶️ Острое</option>
+                        <option value="🍽️ Классика">🍽️ Классика</option>
+                        <option value="🧀 Сырная">🧀 Сырная</option>
+                        <option value="🥩 Мясная">🥩 Мясная</option>
+                        <option value="🐟 Рыбная">🐟 Рыбная</option>
+                        <option value="🌿 Зелёная">🌿 Зелёная</option>
+                        <option value="🍫 Десерт">🍫 Десерт</option>
+                        <option value="🍷 Винная">🍷 Винная</option>
+                        <option value="🥗 Лёгкая">🥗 Лёгкая</option>
+                    </select>
+                    <div class="btn-group">
+                        <button class="btn btn-select-all" id="selectAllBtn">✅ Выделить все</button>
+                        <button class="btn btn-deselect-all" id="deselectAllBtn">❌ Снять выделение</button>
+                    </div>
+                    <button class="btn btn-activate-now" id="activateNowBtn" style="width:100%; margin-top:10px;">🔑 Активировать полную версию</button>
+                    <div class="btn-group" style="margin-top:8px;">
+                        <button class="btn btn-align" id="alignCenterBtn">⬛ Выровнять по центру</button>
+                        <button class="btn" id="toggleGridBtn" style="background:#607d8b;">📐 Сетка</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Шаблоны -->
+            <details open>
+                <summary>🎨 Шаблоны оформления</summary>
+                <div class="content">
+                    <label>Применить шаблон ко всем блокам</label>
+                    <select id="templateSelect">
+                        <option value="">Выберите шаблон</option>
+                        <option value="luxury">✨ Роскошный (золото/чёрный)</option>
+                        <option value="minimal">⬜ Минимализм (белый/серый)</option>
+                        <option value="summer">🌞 Летний (светлые тона)</option>
+                        <option value="italian">🍝 Итальянский (тёплые)</option>
+                        <option value="vintage">📜 Винтаж (пастельные)</option>
+                        <option value="fusion">🌈 Фьюжн (яркие)</option>
+                        <option value="classic">📘 Классика (синий/золотой)</option>
+                        <option value="green">🌿 Зелёный (свежие оттенки)</option>
+                        <option value="chocolate">🍫 Шоколадный (коричневые)</option>
+                        <option value="burgundy">🍷 Бургундский (винный)</option>
+                        <option value="gold">✨ Золотой (роскошь)</option>
+                        <option value="floral">🌸 Цветочный (пастельные)</option>
+                    </select>
+                    <button class="btn btn-template" id="applyTemplateBtn" style="width:100%; margin-top:8px;">Применить шаблон</button>
+                </div>
+            </details>
+
+            <!-- Настройки текста и внешности -->
+            <details open>
+                <summary>🎨 Оформление блока</summary>
+                <div class="content">
+                    <label>Шрифт</label>
+                    <select id="fontFamily">
+                        <optgroup label="Без засечек">
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Inter', sans-serif">Inter</option>
+                            <option value="'Manrope', sans-serif">Manrope</option>
+                            <option value="'Fira Sans', sans-serif">Fira Sans</option>
+                            <option value="'Exo 2', sans-serif">Exo 2</option>
+                            <option value="'Cuprum', sans-serif">Cuprum</option>
+                            <option value="'Play', sans-serif">Play</option>
+                            <option value="'Cabin', sans-serif">Cabin</option>
+                            <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
+                            <option value="'Nunito', sans-serif">Nunito</option>
+                            <option value="'Oswald', sans-serif">Oswald</option>
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Quicksand', sans-serif">Quicksand</option>
+                            <option value="'Raleway', sans-serif">Raleway</option>
+                            <option value="'Source Sans Pro', sans-serif">Source Sans Pro</option>
+                        </optgroup>
+                        <optgroup label="С засечками">
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Lora', serif">Lora</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                            <option value="'Philosopher', serif">Philosopher</option>
+                            <option value="'Alegreya', serif">Alegreya</option>
+                            <option value="'Bitter', serif">Bitter</option>
+                            <option value="'DM Serif Display', serif">DM Serif Display</option>
+                            <option value="'EB Garamond', serif">EB Garamond</option>
+                            <option value="'Merriweather', serif">Merriweather</option>
+                        </optgroup>
+                        <optgroup label="Рукописные">
+                            <option value="'Caveat', cursive">Caveat</option>
+                            <option value="'Pacifico', cursive">Pacifico</option>
+                            <option value="'Comic Neue', cursive">Comic Neue</option>
+                        </optgroup>
+                        <optgroup label="Декоративные">
+                            <option value="'Russo One', sans-serif">Russo One</option>
+                        </optgroup>
+                    </select>
+                    <label>Размер названия</label>
+                    <input type="number" id="fontSizeName" value="24" min="10" max="70" />
+                    <label>Размер описания, веса</label>
+                    <input type="number" id="fontSizeOther" value="16" min="8" max="50" />
+                    <label>Размер цены</label>
+                    <input type="number" id="fontSizePrice" value="18" min="8" max="50" />
+                    <label>Цвет текста</label>
+                    <input type="color" id="textColor" value="#ffffff" />
+                    <label>Тень текста (пиксели)</label>
+                    <input type="number" id="shadowBlur" value="8" min="0" max="30" />
+                    <label>Прозрачность блока (всего)</label>
+                    <input type="range" id="opacityBlock" min="0" max="1" step="0.05" value="1" />
+                    <span id="opacityBlockValue">1.00</span>
+                    <label>Цвет фона блока</label>
+                    <input type="color" id="bgColorBlock" value="#000000" />
+                    <label>Прозрачность фона блока</label>
+                    <input type="range" id="bgOpacityBlock" min="0" max="1" step="0.05" value="0.35" />
+                    <span id="bgOpacityBlockValue">0.35</span>
+                    <label>Яркость блока (затемнение)</label>
+                    <input type="range" id="brightnessBlock" min="0.3" max="1.5" step="0.05" value="1" />
+                    <span id="brightnessBlockValue">1.00</span>
+                    <label>Отступы внутри блока (px, общие)</label>
+                    <input type="number" id="paddingBlock" value="8" min="0" max="50" />
+
+                    <!-- Размытие краёв -->
+                    <label>Размытие краёв (px)</label>
+                    <input type="range" id="blurRadius" min="0" max="20" step="1" value="0" />
+                    <span id="blurRadiusValue">0</span>
+
+                    <hr style="border-color:#333; margin:12px 0;" />
+                    <label>Тип рамки</label>
+                    <select id="borderType">
+                        <option value="none">Без рамки</option>
+                        <option value="solid">Тонкая линия (1px)</option>
+                        <option value="thick">Толстая линия (3px)</option>
+                        <option value="double">Двойная линия</option>
+                        <option value="shadow">С тенью</option>
+                        <option value="glow">Свечение</option>
+                    </select>
+                    <label>Цвет рамки</label>
+                    <input type="color" id="borderColor" value="#f5e37a" />
+                    <label>Толщина рамки (px)</label>
+                    <input type="number" id="borderWidth" value="2" min="1" max="10" />
+                </div>
+            </details>
+
+            <!-- Редактирование выбранного -->
+            <details open>
+                <summary>📌 Редактировать блок</summary>
+                <div class="content block-controls">
+                    <div class="control-row"><label>Название</label><input type="text" id="editName" placeholder="Название блюда" /></div>
+                    <div class="control-row"><label>Описание</label><textarea id="editDescription" placeholder="Состав... (перенос строк - Enter)"></textarea></div>
+                    <div class="control-row"><label>Вес</label><input type="text" id="editWeight" placeholder="200 г" /></div>
+                    <div class="control-row"><label>Цена</label><input type="text" id="editPrice" placeholder="500 ₽" /></div>
+                    <div class="control-row"><label>Метка</label>
+                        <select id="editBadge">
+                            <option value="">Без метки</option>
+                            <option value="🔥 Хит">🔥 Хит</option>
+                            <option value="✨ Новинка">✨ Новинка</option>
+                            <option value="⭐ Бестселлер">⭐ Бестселлер</option>
+                            <option value="🌱 Веган">🌱 Веган</option>
+                            <option value="🔻 Скидка">🔻 Скидка</option>
+                            <option value="🌶️ Острое">🌶️ Острое</option>
+                            <option value="🍽️ Классика">🍽️ Классика</option>
+                            <option value="🧀 Сырная">🧀 Сырная</option>
+                            <option value="🥩 Мясная">🥩 Мясная</option>
+                            <option value="🐟 Рыбная">🐟 Рыбная</option>
+                            <option value="🌿 Зелёная">🌿 Зелёная</option>
+                            <option value="🍫 Десерт">🍫 Десерт</option>
+                            <option value="🍷 Винная">🍷 Винная</option>
+                            <option value="🥗 Лёгкая">🥗 Лёгкая</option>
+                        </select>
+                    </div>
+                    <div class="control-row"><label>Форма</label>
+                        <select id="editShape">
+                            <option value="rectangle">Прямоугольник</option>
+                            <option value="square">Квадрат</option>
+                            <option value="circle">Круг</option>
+                            <option value="semi">Полукруг</option>
+                        </select>
+                    </div>
+                    <div class="control-row"><label>Фото блюда</label>
+                        <input type="file" id="editImageUpload" accept="image/*" />
+                        <div style="display:flex; gap:8px; margin-top:4px;">
+                            <label style="font-size:0.8rem;">Позиция:</label>
+                            <select id="editImagePosition" style="flex:1;">
+                                <option value="left">Слева</option>
+                                <option value="top">Сверху</option>
+                            </select>
+                            <label style="font-size:0.8rem;">Размер:</label>
+                            <input type="number" id="editImageSize" value="60" min="20" max="200" style="width:70px;" />
+                        </div>
+                        <button class="btn btn-clear" id="removeImageBtn" style="margin-top:4px;">Удалить фото</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" id="updateBlockBtn" style="background:#2e7d32;">Обновить</button>
+                        <button class="btn btn-remove" id="deleteSelectedBtn">Удалить</button>
+                        <button class="btn" id="duplicateBtn" style="background:#ff8f00;">Дублировать</button>
+                    </div>
+                    <div class="selected-info" id="selectedInfo">Ничего не выбрано</div>
+                </div>
+            </details>
+
+            <!-- Экспорт и сохранение -->
+            <details open>
+                <summary>💾 Экспорт / Сохранение</summary>
+                <div class="content">
+                    <label>Формат PNG / PDF</label>
+                    <div class="format-group">
+                        <button class="format-btn active" data-format="9:16">Вертикальный (9:16)</button>
+                        <button class="format-btn" data-format="16:9">Горизонтальный (16:9)</button>
+                        <button class="format-btn" data-format="A4P">A4 книжная</button>
+                        <button class="format-btn" data-format="A4L">A4 альбомная</button>
+                    </div>
+                    <label>Масштаб PNG</label>
+                    <select id="pngScale" style="width:auto; padding:4px 8px;">
+                        <option value="1">1x</option>
+                        <option value="2">2x</option>
+                        <option value="3" selected>3x (высокое)</option>
+                    </select>
+                    <div class="btn-group">
+                        <button class="btn btn-export-png" id="exportPngBtn">⬇ PNG</button>
+                        <button class="btn btn-preview" id="previewBtn">👁 Предпросмотр</button>
+                        <button class="btn btn-export-pdf" id="exportPdfBtn">📄 PDF</button>
+                        <button class="btn btn-print" id="printBtn">🖨 Печать</button>
+                        <button class="btn btn-clear" id="clearBtn">🗑 Очистить всё</button>
+                    </div>
+                    <div class="btn-group" style="margin-top:8px;">
+                        <button class="btn btn-save" id="saveProjectBtn">💾 Сохранить проект</button>
+                        <button class="btn btn-load" id="loadProjectBtn">📂 Загрузить проект</button>
+                        <input type="file" id="projectFileInput" accept=".json" style="display:none;" />
+                    </div>
+                    <hr style="border-color:#333; margin:10px 0;" />
+                    <label>📜 История проектов (последние 10)</label>
+                    <div class="history-list" id="historyList"></div>
+                    <button class="btn btn-clear" id="clearHistoryBtn" style="width:100%; margin-top:6px;">Очистить историю</button>
+                </div>
+            </details>
         </div>
 
         <!-- Холст -->
@@ -632,122 +883,166 @@
         </div>
     </div>
 
-    <!-- Модальные окна (без изменений) -->
-    <!-- ... -->
+    <!-- Модальное окно активации -->
+    <div class="modal-overlay" id="activationModal">
+        <div class="modal-content">
+            <button class="modal-close" id="activationModalClose">&times;</button>
+            <h2>🔑 Пробная версия</h2>
+            <p>Вы использовали все <strong>3 бесплатных блока</strong>. Для продолжения работы введите код активации или свяжитесь с владельцем.</p>
+            <input type="text" id="activationCodeInput" placeholder="Введите код активации" />
+            <button class="btn" id="activateBtn">Активировать</button>
+            <div class="owner-name">👨‍🍳 Владелец: Лев</div>
+            <div class="contacts">
+                <a href="https://t.me/Levkirilenko" target="_blank"><span class="icon">✈️</span> Telegram</a>
+                <a href="https://www.instagram.com/chef_lev1" target="_blank"><span class="icon">📸</span> Instagram</a>
+                <a href="https://www.tiktok.com/@rulevru25" target="_blank"><span class="icon">🎵</span> TikTok</a>
+            </div>
+            <p style="margin-top:15px; font-size:0.9rem; color:#aaa;">
+                Также вы можете написать в <a href="https://t.me/MenuEngineer" target="_blank" style="color:#f5e37a;">Telegram-канал</a> для получения кода.
+            </p>
+        </div>
+    </div>
+
+    <!-- Модальное окно инструкции -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal-content help-content">
+            <button class="modal-close" id="helpModalClose">&times;</button>
+            <h2>📖 Как пользоваться</h2>
+            <ul>
+                <li><strong>➕ Добавление блоков:</strong> нажмите «+ Блюдо», «+ Заголовок» или «+ Логотип». Блок появится на холсте.</li>
+                <li><strong>✏️ Редактирование:</strong> выделите блок (кликните на него), затем измените текст, метку, форму, фото, рамку в панели справа.</li>
+                <li><strong>🔄 Перетаскивание:</strong> зажмите блок мышью и переместите в нужное место (при включённой сетке будет притягиваться к шагу 30px).</li>
+                <li><strong>📐 Изменение размера:</strong> потяните за маркеры (кружочки) по краям блока.</li>
+                <li><strong>🎨 Стили:</strong> настройте шрифт, цвет, тени, прозрачность, фон, рамку и <strong>размытие краёв</strong> в разделе «Оформление блока».</li>
+                <li><strong>💾 Экспорт:</strong> сохраните результат в PNG, PDF или распечатайте. Выберите формат (9:16, 16:9 или A4).</li>
+                <li><strong>📂 Сохранение проекта:</strong> используйте «Сохранить проект» и «Загрузить проект», или загрузите из истории.</li>
+                <li><strong>⌨️ Горячие клавиши:</strong> Delete – удалить выделенные, Ctrl+A – выделить все, Ctrl+C – копировать, Ctrl+V – вставить (дублировать).</li>
+                <li><strong>🔑 Активация:</strong> после 3-х блоков потребуется ввести код. Свяжитесь с владельцем через контакты.</li>
+            </ul>
+            <p style="margin-top:15px; color:#aaa; text-align:center;">Удачи в создании стильного меню! 🍽️</p>
+        </div>
+    </div>
+
+    <!-- Модальное окно предпросмотра -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <img id="previewImage" src="" alt="Предпросмотр" style="width:100%; height:auto;" />
+        </div>
+    </div>
 
     <script>
         (function() {
             "use strict";
 
-            // ==================== FIREBASE CONFIG ====================
-            // ВСТАВЬТЕ СВОЙ КОНФИГ ЗДЕСЬ (ТОТ ЖЕ, ЧТО В АДМИНКЕ)
-            const firebaseConfig = {
-                apiKey: "ВАШ_API_KEY",
-                authDomain: "ВАШ_ПРОЕКТ.firebaseapp.com",
-                databaseURL: "https://ВАШ_ПРОЕКТ-default-rtdb.firebaseio.com",
-                projectId: "ВАШ_ПРОЕКТ",
-                storageBucket: "ВАШ_ПРОЕКТ.appspot.com",
-                messagingSenderId: "123456789",
-                appId: "1:123456789:web:abcdef"
-            };
-
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.database();
-
-            // ==================== ПЕРЕМЕННЫЕ ====================
-            let blocks = [];
-            let selectedIds = [];
-            let blockIdCounter = 0;
-            let exportFormat = '9:16';
-            let dragData = null;
-            let resizeData = null;
-            let animationFrameId = null;
-            let showGrid = false;
-            const GRID_SIZE = 30;
-            let currentBgUrl = null;
-            let activationCodes = []; // загруженные коды из Firebase
-            let BG_DATA = {}; // категории и фоны
-
-            // ==================== ДОМ-ЭЛЕМЕНТЫ ====================
+            // ======================== ДОМ-ЭЛЕМЕНТЫ ========================
             const canvas = document.getElementById('canvas');
             const bgImage = document.getElementById('bgImage');
+            const gridOverlay = document.getElementById('gridOverlay');
             const bgUpload = document.getElementById('bgUpload');
             const clearBgBtn = document.getElementById('clearBgBtn');
             const bgCategorySelect = document.getElementById('bgCategorySelect');
             const bgPresetSelect = document.getElementById('bgPresetSelect');
-            // ... остальные DOM-элементы (их много, но они уже объявлены в оригинале)
-            // Я пропускаю для краткости, но в полном коде они все есть.
+            const addBlockBtn = document.getElementById('addBlockBtn');
+            const addTitleBtn = document.getElementById('addTitleBtn');
+            const addLogoBtn = document.getElementById('addLogoBtn');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+            const fontFamily = document.getElementById('fontFamily');
+            const fontSizeName = document.getElementById('fontSizeName');
+            const fontSizeOther = document.getElementById('fontSizeOther');
+            const fontSizePrice = document.getElementById('fontSizePrice');
+            const textColor = document.getElementById('textColor');
+            const shadowBlur = document.getElementById('shadowBlur');
+            const opacityBlock = document.getElementById('opacityBlock');
+            const opacityBlockValue = document.getElementById('opacityBlockValue');
+            const bgColorBlock = document.getElementById('bgColorBlock');
+            const bgOpacityBlock = document.getElementById('bgOpacityBlock');
+            const bgOpacityBlockValue = document.getElementById('bgOpacityBlockValue');
+            const brightnessBlock = document.getElementById('brightnessBlock');
+            const brightnessBlockValue = document.getElementById('brightnessBlockValue');
+            const paddingBlock = document.getElementById('paddingBlock');
+            const borderType = document.getElementById('borderType');
+            const borderColor = document.getElementById('borderColor');
+            const borderWidth = document.getElementById('borderWidth');
+            const blurRadiusInput = document.getElementById('blurRadius');
+            const blurRadiusValue = document.getElementById('blurRadiusValue');
+            const editName = document.getElementById('editName');
+            const editDescription = document.getElementById('editDescription');
+            const editWeight = document.getElementById('editWeight');
+            const editPrice = document.getElementById('editPrice');
+            const editBadge = document.getElementById('editBadge');
+            const editShape = document.getElementById('editShape');
+            const updateBlockBtn = document.getElementById('updateBlockBtn');
+            const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+            const duplicateBtn = document.getElementById('duplicateBtn');
+            const selectedInfo = document.getElementById('selectedInfo');
+            const exportPngBtn = document.getElementById('exportPngBtn');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+            const printBtn = document.getElementById('printBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const badgeSelect = document.getElementById('badgeSelect');
+            const formatBtns = document.querySelectorAll('.format-btn');
+            const pngScale = document.getElementById('pngScale');
+            const previewBtn = document.getElementById('previewBtn');
+            const previewModal = document.getElementById('previewModal');
+            const previewImage = document.getElementById('previewImage');
+            const modalClose = document.getElementById('modalClose');
+            const templateSelect = document.getElementById('templateSelect');
+            const applyTemplateBtn = document.getElementById('applyTemplateBtn');
+            const saveProjectBtn = document.getElementById('saveProjectBtn');
+            const loadProjectBtn = document.getElementById('loadProjectBtn');
+            const projectFileInput = document.getElementById('projectFileInput');
+            const editImageUpload = document.getElementById('editImageUpload');
+            const editImagePosition = document.getElementById('editImagePosition');
+            const editImageSize = document.getElementById('editImageSize');
+            const removeImageBtn = document.getElementById('removeImageBtn');
+            const historyList = document.getElementById('historyList');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const activationModal = document.getElementById('activationModal');
+            const activationModalClose = document.getElementById('activationModalClose');
+            const activationCodeInput = document.getElementById('activationCodeInput');
+            const activateBtn = document.getElementById('activateBtn');
+            const activateNowBtn = document.getElementById('activateNowBtn');
+            const helpBtn = document.getElementById('helpBtn');
+            const helpModal = document.getElementById('helpModal');
+            const helpModalClose = document.getElementById('helpModalClose');
+            const alignCenterBtn = document.getElementById('alignCenterBtn');
+            const toggleGridBtn = document.getElementById('toggleGridBtn');
 
-            // ==================== ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ====================
-            function loadActivationCodes() {
-                return db.ref('activation_codes').once('value').then(snapshot => {
-                    const data = snapshot.val() || {};
-                    activationCodes = Object.values(data); // массив кодов
-                    console.log('Загружены коды:', activationCodes);
-                }).catch(err => {
-                    console.warn('Ошибка загрузки кодов:', err);
-                    activationCodes = []; // если ошибка, оставляем пустой массив
-                });
-            }
-
-            function loadCategoriesFromFirebase() {
-                return db.ref('bg_categories').once('value').then(snapshot => {
-                    const data = snapshot.val() || {};
-                    BG_DATA = {};
-                    for (const [key, category] of Object.entries(data)) {
-                        BG_DATA[key] = {
-                            label: category.label || key,
-                            presets: category.presets || {}
-                        };
+            // ======================== БАЗА ДАННЫХ ФОНОВ ПО КАТЕГОРИЯМ ========================
+            const BG_DATA = {
+                bath: {
+                    label: 'Баня',
+                    presets: {
+                        'b1': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/91d9b63c-c369-4155-997f-c8eff0bce9d3.jpg',
+                        'b2': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/f95d9603-7c27-40e5-a6e4-f6ea691566b1.jpg',
+                        'b3': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/009d6962-ca62-4160-a74a-c1094d33760a.jpg',
+                        'b4': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/b18d89f2-9fcb-42a0-87b7-e7af154f54a8.jpg',
+                        'b5': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/19ae0d43-0cd9-4c2b-8a91-5192def545da.jpg',
+                        'b6': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/1d8b7733-7308-4c05-acca-c2e5e000b71e.jpg'
                     }
-                    updateCategorySelect();
-                    // Если есть выбранная категория, обновляем список фонов
-                    const currentCategory = bgCategorySelect.value;
-                    if (currentCategory && BG_DATA[currentCategory]) {
-                        updatePresetList(currentCategory);
-                    } else {
-                        const firstKey = Object.keys(BG_DATA)[0];
-                        if (firstKey) {
-                            bgCategorySelect.value = firstKey;
-                            updatePresetList(firstKey);
-                        }
-                    }
-                }).catch(err => {
-                    console.warn('Ошибка загрузки категорий из Firebase:', err);
-                });
-            }
+                },
+                restaurant: { label: 'Ресторан', presets: {} },
+                cafe: { label: 'Кафе', presets: {} },
+                shaurma: { label: 'Шаурмичная', presets: {} },
+                japanese: { label: 'Японская кухня', presets: {} },
+                italian: { label: 'Итальянская кухня', presets: {} },
+                russian: { label: 'Русская кухня', presets: {} },
+                pub: { label: 'Паб', presets: {} },
+                canteen: { label: 'Столовая', presets: {} }
+            };
 
-            // ==================== ОБНОВЛЕНИЕ СПИСКОВ ====================
-            function updateCategorySelect() {
-                bgCategorySelect.innerHTML = '';
-                for (const [key, cat] of Object.entries(BG_DATA)) {
-                    const opt = document.createElement('option');
-                    opt.value = key;
-                    opt.textContent = cat.label || key;
-                    bgCategorySelect.appendChild(opt);
-                }
-                // Если нет категорий, показываем сообщение
-                if (Object.keys(BG_DATA).length === 0) {
-                    const opt = document.createElement('option');
-                    opt.value = '';
-                    opt.textContent = '📭 Нет категорий';
-                    opt.disabled = true;
-                    bgCategorySelect.appendChild(opt);
-                }
-            }
-
+            // ======================== ФУНКЦИЯ ОБНОВЛЕНИЯ СПИСКА ФОНОВ ========================
             function updatePresetList(categoryKey) {
                 const category = BG_DATA[categoryKey];
-                if (!category) {
-                    bgPresetSelect.innerHTML = '<option value="">-- Выберите фон --</option>';
-                    return;
-                }
+                if (!category) return;
                 const presets = category.presets;
                 bgPresetSelect.innerHTML = '<option value="">-- Выберите фон --</option>';
                 if (Object.keys(presets).length === 0) {
                     const opt = document.createElement('option');
                     opt.value = '';
-                    opt.textContent = '📭 Нет фонов';
+                    opt.textContent = '📭 Нет фонов для этой категории';
                     opt.disabled = true;
                     bgPresetSelect.appendChild(opt);
                 } else {
@@ -758,60 +1053,137 @@
                         bgPresetSelect.appendChild(opt);
                     }
                 }
+                // Сбросить текущий выбор, если он не соответствует новой категории
                 bgPresetSelect.value = '';
             }
 
-            // ==================== УСТАНОВКА ФОНА ====================
+            // ======================== УСТАНОВКА ФОНА (ИСПРАВЛЕННАЯ) ========================
+            let currentBgUrl = null;
+
             function setBackground(url) {
                 if (!url) {
                     bgImage.style.backgroundImage = '';
                     currentBgUrl = null;
+                    syncPresetSelect();
                     return;
                 }
+                // Если такой же URL уже установлен, не перезагружаем
                 if (currentBgUrl === url) return;
+
+                // Сразу устанавливаем фон (без ожидания загрузки) – для быстрого отклика
                 bgImage.style.backgroundImage = 'url(' + url + ')';
+                // Сохраняем текущий URL, чтобы не перезагружать
                 currentBgUrl = url;
-                // Синхронизируем выбор в списке
-                for (const option of bgPresetSelect.options) {
-                    if (option.value === url) {
-                        bgPresetSelect.value = url;
-                        break;
+                syncPresetSelect();
+
+                // Параллельно пробуем предзагрузить изображение, чтобы убедиться, что оно доступно
+                // Если загрузка не удастся, фон уже будет отображаться (пусть даже с ошибкой),
+                // но мы не будем показывать alert.
+                const img = new Image();
+                let timeoutId = setTimeout(() => {
+                    // Если загрузка зависла, просто ничего не делаем
+                    console.warn('Предзагрузка фона зависла:', url);
+                }, 10000); // 10 секунд таймаут
+
+                img.onload = function() {
+                    clearTimeout(timeoutId);
+                    console.log('Фон успешно загружен:', url);
+                    // Можно дополнительно обновить фон, если нужно
+                };
+                img.onerror = function() {
+                    clearTimeout(timeoutId);
+                    console.warn('Не удалось загрузить фон (но он уже установлен):', url);
+                    // Не показываем alert, чтобы не раздражать пользователя
+                };
+                img.src = url;
+            }
+
+            // Синхронизация выпадающего списка с текущим фоном
+            function syncPresetSelect() {
+                const currentBg = bgImage.style.backgroundImage;
+                let found = false;
+                if (currentBg) {
+                    const urlMatch = currentBg.match(/url\(["']?(.*?)["']?\)/);
+                    if (urlMatch && urlMatch[1]) {
+                        const url = urlMatch[1];
+                        for (const option of bgPresetSelect.options) {
+                            if (option.value === url) {
+                                bgPresetSelect.value = url;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            bgPresetSelect.value = '';
+                        }
                     }
+                }
+                if (!found) {
+                    bgPresetSelect.value = '';
                 }
             }
 
-            // ==================== СИСТЕМА АКТИВАЦИИ (С ЗАГРУЗКОЙ КОДОВ) ====================
+            // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
+            bgCategorySelect.addEventListener('change', function() {
+                updatePresetList(this.value);
+            });
+
+            bgPresetSelect.addEventListener('change', function() {
+                const url = this.value;
+                if (url) {
+                    setBackground(url);
+                } else {
+                    setBackground(null);
+                }
+            });
+
+            // Инициализация: загружаем фоны для текущей категории (по умолчанию 'bath')
+            updatePresetList('bath');
+
+            // ======================== СИСТЕМА АКТИВАЦИИ ========================
+            const FREE_LIMIT = 3;
             const ACTIVATION_KEY = 'menu_activated';
+            const VALID_CODES = [
+                'ШЕФ2026', 'LEV777', 'MENU2026', 'CHEF1', 'LEV2026',
+                'MASTER', 'GRILL', 'STEAK', 'PIZZA', 'PASTA',
+                'SALAD', 'SOUP', 'FISH', 'MEAT', 'VEGAN',
+                'BBQ', 'WOK', 'SUSHI', 'BURGER', 'TACO'
+            ];
 
             function isActivated() {
                 return localStorage.getItem(ACTIVATION_KEY) === 'true';
             }
 
             function activate(code) {
-                // Проверяем код по загруженному списку
-                if (activationCodes.includes(code.trim())) {
+                if (VALID_CODES.includes(code.trim())) {
                     localStorage.setItem(ACTIVATION_KEY, 'true');
                     return true;
                 }
                 return false;
             }
 
-            // Функция проверки возможности добавления блока
             function canAddBlock() {
                 if (isActivated()) return true;
-                return blocks.length < 3;
+                return blocks.length < FREE_LIMIT;
             }
 
-            // Обработчик активации (вызывается из модалки)
+            function showActivationModal() {
+                activationModal.classList.add('active');
+            }
+
+            function hideActivationModal() {
+                activationModal.classList.remove('active');
+            }
+
             function handleActivation() {
-                const code = document.getElementById('activationCodeInput').value.trim();
+                const code = activationCodeInput.value.trim();
                 if (!code) {
                     alert('Введите код активации.');
                     return;
                 }
                 if (activate(code)) {
                     alert('✅ Активация успешна! Теперь вы можете добавлять неограниченное количество блоков.');
-                    document.getElementById('activationModal').classList.remove('active');
+                    hideActivationModal();
                     updateActivationUI();
                     renderBlocks();
                 } else {
@@ -820,94 +1192,1582 @@
             }
 
             function updateActivationUI() {
-                const btn = document.getElementById('activateNowBtn');
                 if (isActivated()) {
-                    btn.textContent = '✅ Активировано';
-                    btn.style.background = '#2e7d32';
+                    activateNowBtn.textContent = '✅ Активировано';
+                    activateNowBtn.style.background = '#2e7d32';
                 } else {
-                    btn.textContent = '🔑 Активировать полную версию';
-                    btn.style.background = '#f5a623';
+                    activateNowBtn.textContent = '🔑 Активировать полную версию';
+                    activateNowBtn.style.background = '#f5a623';
                 }
             }
 
-            // ==================== ОСТАЛЬНОЙ КОД КОНСТРУКТОРА (БЕЗ ИЗМЕНЕНИЙ) ====================
-            // Здесь идут все функции: createBlockData, renderBlocks, drag, resize,
-            // экспорт, сохранение, история и т.д. Они остаются такими же,
-            // как в вашем оригинальном коде, за исключением того, что теперь
-            // при добавлении блока проверяется canAddBlock() с загруженными кодами.
+            activateNowBtn.addEventListener('click', showActivationModal);
+            activateBtn.addEventListener('click', handleActivation);
+            activationCodeInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') handleActivation();
+            });
+            activationModalClose.addEventListener('click', hideActivationModal);
+            activationModal.addEventListener('click', function(e) {
+                if (e.target === activationModal) hideActivationModal();
+            });
 
-            // ... (весь остальной код конструктора, который мы не меняем)
+            // ======================== ИСТОРИЯ ПРОЕКТОВ ========================
+            const HISTORY_KEY = 'menu_project_history';
+            const MAX_HISTORY = 10;
 
-            // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-            window.addEventListener('load', function() {
-                // Загружаем коды и категории из Firebase
-                Promise.all([loadActivationCodes(), loadCategoriesFromFirebase()]).then(() => {
-                    // После загрузки данных инициализируем остальное
-                    updateCanvasSize();
-                    restoreLastProject();
-                    renderHistory();
-                    if (blocks.length === 0) {
-                        addBlock('dish');
-                    }
-                    if (blocks.length > 0) {
-                        selectedIds = [blocks[0].id];
+            function getHistory() {
+                const data = localStorage.getItem(HISTORY_KEY);
+                return data ? JSON.parse(data) : [];
+            }
+
+            function saveHistory(history) {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+                renderHistory();
+            }
+
+            function addToHistory(name, projectData) {
+                let history = getHistory();
+                const entry = {
+                    name: name || `Проект ${new Date().toLocaleString()}`,
+                    date: new Date().toISOString(),
+                    data: projectData
+                };
+                history.unshift(entry);
+                if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+                saveHistory(history);
+            }
+
+            function loadProjectFromData(data) {
+                try {
+                    if (data.blocks && Array.isArray(data.blocks)) {
+                        blocks = data.blocks;
+                        let maxId = 0;
+                        blocks.forEach(b => { if (b.id > maxId) maxId = b.id; });
+                        blockIdCounter = maxId;
+                        if (data.bgImage) {
+                            const match = data.bgImage.match(/url\(["']?(.*?)["']?\)/);
+                            if (match && match[1]) {
+                                setBackground(match[1]);
+                            } else {
+                                setBackground(null);
+                            }
+                        } else {
+                            setBackground(null);
+                        }
+                        selectedIds = [];
                         renderBlocks();
+                        if (blocks.length > 0) {
+                            syncEditFields();
+                        }
+                        alert('Проект загружен успешно!');
                     } else {
-                        renderBlocks();
+                        alert('Неверный формат данных.');
                     }
-                    updateActivationUI();
-                    if (showGrid) canvas.classList.add('show-grid');
-                    // Вешаем обработчики событий на кнопки активации
-                    document.getElementById('activateNowBtn').addEventListener('click', function() {
-                        document.getElementById('activationModal').classList.add('active');
+                } catch (err) {
+                    alert('Ошибка загрузки: ' + err.message);
+                }
+            }
+
+            function renderHistory() {
+                const history = getHistory();
+                historyList.innerHTML = '';
+                if (history.length === 0) {
+                    historyList.innerHTML = '<div style="color:#888; padding:8px; text-align:center;">Нет сохранённых проектов</div>';
+                    return;
+                }
+                history.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'hname';
+                    nameSpan.textContent = item.name;
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'hdate';
+                    dateSpan.textContent = new Date(item.date).toLocaleString();
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'hdel';
+                    delBtn.textContent = '×';
+                    delBtn.title = 'Удалить из истории';
+                    delBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        let hist = getHistory();
+                        hist.splice(index, 1);
+                        saveHistory(hist);
                     });
-                    document.getElementById('activateBtn').addEventListener('click', handleActivation);
-                    document.getElementById('activationModalClose').addEventListener('click', function() {
-                        document.getElementById('activationModal').classList.remove('active');
+                    div.appendChild(nameSpan);
+                    div.appendChild(dateSpan);
+                    div.appendChild(delBtn);
+                    div.addEventListener('click', function() {
+                        if (confirm(`Загрузить проект "${item.name}"?`)) {
+                            loadProjectFromData(item.data);
+                        }
                     });
-                    document.getElementById('activationCodeInput').addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') handleActivation();
+                    historyList.appendChild(div);
+                });
+            }
+
+            clearHistoryBtn.addEventListener('click', function() {
+                if (confirm('Очистить всю историю проектов?')) {
+                    localStorage.removeItem(HISTORY_KEY);
+                    renderHistory();
+                }
+            });
+
+            // ======================== ИНСТРУКЦИЯ ========================
+            helpBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                helpModal.classList.add('active');
+            });
+            helpModalClose.addEventListener('click', function() {
+                helpModal.classList.remove('active');
+            });
+            helpModal.addEventListener('click', function(e) {
+                if (e.target === helpModal) helpModal.classList.remove('active');
+            });
+
+            // ======================== ОСНОВНЫЕ ДАННЫЕ ========================
+            let blocks = [];
+            let selectedIds = [];
+            let blockIdCounter = 0;
+            let exportFormat = '9:16';
+            let dragData = null;
+            let resizeData = null;
+            let animationFrameId = null;
+            let showGrid = false;
+            const GRID_SIZE = 30;
+
+            // ======================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ========================
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? `${parseInt(result[1],16)}, ${parseInt(result[2],16)}, ${parseInt(result[3],16)}` : '0,0,0';
+            }
+
+            function snapToGrid(val) {
+                return Math.round(val / GRID_SIZE) * GRID_SIZE;
+            }
+
+            // ======================== УПРАВЛЕНИЕ РАЗМЕРАМИ ХОЛСТА ========================
+            function updateCanvasSize() {
+                const container = canvas.parentElement;
+                const containerWidth = container.clientWidth - 4;
+                const containerHeight = container.clientHeight - 4;
+                let ratio;
+                if (exportFormat === '9:16') {
+                    ratio = 9 / 16;
+                } else if (exportFormat === '16:9') {
+                    ratio = 16 / 9;
+                } else if (exportFormat === 'A4P') {
+                    ratio = 210 / 297;
+                } else if (exportFormat === 'A4L') {
+                    ratio = 297 / 210;
+                } else {
+                    ratio = 9 / 16;
+                }
+                let width = containerWidth;
+                let height = width / ratio;
+                if (height > containerHeight) {
+                    height = containerHeight;
+                    width = height * ratio;
+                }
+                width = Math.max(200, Math.min(width, 1200));
+                height = Math.max(200, Math.min(height, 1600));
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                canvas._width = width;
+                canvas._height = height;
+            }
+
+            // ======================== ПЕРЕСЧЁТ КООРДИНАТ ПРИ СМЕНЕ ФОРМАТА ========================
+            function recalcPositionsForNewFormat() {
+                if (blocks.length === 0) return;
+                const oldW = canvas._width || parseFloat(canvas.style.width) || 400;
+                const oldH = canvas._height || parseFloat(canvas.style.height) || 600;
+                updateCanvasSize();
+                const newW = canvas._width;
+                const newH = canvas._height;
+                if (oldW === 0 || oldH === 0) return;
+                blocks.forEach(block => {
+                    if (block.width && block.height) {
+                        const wPercent = block.width / oldW;
+                        const hPercent = block.height / oldH;
+                        block.width = Math.round(wPercent * newW);
+                        block.height = Math.round(hPercent * newH);
+                    }
+                    const xPercent = block.left / oldW;
+                    const yPercent = block.top / oldH;
+                    block.left = Math.round(xPercent * newW);
+                    block.top = Math.round(yPercent * newH);
+                    block.left = Math.max(0, Math.min(block.left, newW - (block.width || 60)));
+                    block.top = Math.max(0, Math.min(block.top, newH - (block.height || 40)));
+                });
+                renderBlocks();
+            }
+
+            // ======================== СОЗДАНИЕ БЛОКА ========================
+            function createBlockData(name = 'Блюдо', description = 'Состав блюда', weight = '200 г', price = '500 ₽', left = 20, top = 20, type = 'dish', badge = '', shape = 'rectangle', image = null, imagePos = 'left', imageSize = 60) {
+                return {
+                    id: ++blockIdCounter,
+                    name,
+                    description,
+                    weight,
+                    price,
+                    left,
+                    top,
+                    type,
+                    badge,
+                    shape,
+                    fontFamily: fontFamily.value,
+                    fontSizeName: parseInt(fontSizeName.value) || 24,
+                    fontSizeOther: parseInt(fontSizeOther.value) || 16,
+                    fontSizePrice: parseInt(fontSizePrice.value) || 18,
+                    color: textColor.value,
+                    shadow: parseInt(shadowBlur.value) || 8,
+                    opacity: parseFloat(opacityBlock.value) || 1,
+                    bgColor: bgColorBlock.value,
+                    bgOpacity: parseFloat(bgOpacityBlock.value) || 0.35,
+                    brightness: parseFloat(brightnessBlock.value) || 1,
+                    padding: paddingBlock.value + 'px',
+                    image: image || null,
+                    imagePos: imagePos,
+                    imageSize: imageSize,
+                    borderType: borderType.value || 'none',
+                    borderColor: borderColor.value || '#f5e37a',
+                    borderWidth: parseInt(borderWidth.value) || 2,
+                    blurRadius: parseInt(blurRadiusInput.value) || 0,
+                    width: null,
+                    height: null
+                };
+            }
+
+            // ======================== РЕНДЕРИНГ БЛОКОВ ========================
+            function renderBlocks() {
+                document.querySelectorAll('.text-block').forEach(el => el.remove());
+
+                blocks.forEach((block) => {
+                    const div = document.createElement('div');
+                    div.className = 'text-block shape-' + block.shape;
+                    if (block.badge) div.classList.add('badge-type');
+                    const isSelected = selectedIds.includes(block.id);
+                    if (isSelected) div.classList.add('selected');
+                    div.dataset.id = block.id;
+
+                    div.style.left = block.left + 'px';
+                    div.style.top = block.top + 'px';
+                    if (block.width) div.style.width = block.width + 'px';
+                    if (block.height) div.style.height = block.height + 'px';
+
+                    div.style.fontFamily = block.fontFamily || 'Georgia, serif';
+                    div.style.color = block.color || '#ffffff';
+                    div.style.textShadow = `0 2px ${block.shadow || 8}px rgba(0,0,0,0.9)`;
+                    div.style.opacity = block.opacity ?? 1;
+                    const bgColor = block.bgColor || '#000000';
+                    const bgOp = block.bgOpacity ?? 0.35;
+                    const blur = block.blurRadius || 0;
+                    if (blur > 0) {
+                        const bgLayer = document.createElement('div');
+                        bgLayer.className = 'blur-background';
+                        bgLayer.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
+                        bgLayer.style.filter = `blur(${blur}px)`;
+                        bgLayer.style.borderRadius = 'inherit';
+                        div.appendChild(bgLayer);
+                        div.style.background = 'none';
+                    } else {
+                        div.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
+                    }
+                    div.style.filter = `brightness(${block.brightness ?? 1})`;
+                    div.style.padding = block.padding || '8px 14px';
+
+                    const bType = block.borderType || 'none';
+                    if (bType === 'none') {
+                        div.style.border = 'none';
+                        div.style.boxShadow = 'none';
+                    } else if (bType === 'solid') {
+                        div.style.border = `${block.borderWidth || 2}px solid ${block.borderColor || '#f5e37a'}`;
+                        div.style.boxShadow = 'none';
+                    } else if (bType === 'thick') {
+                        div.style.border = `${Math.max(3, block.borderWidth || 3)}px solid ${block.borderColor || '#f5e37a'}`;
+                        div.style.boxShadow = 'none';
+                    } else if (bType === 'double') {
+                        div.style.border = `double ${block.borderWidth || 3}px ${block.borderColor || '#f5e37a'}`;
+                        div.style.boxShadow = 'none';
+                    } else if (bType === 'shadow') {
+                        div.style.border = 'none';
+                        div.style.boxShadow = `0 4px 15px rgba(0,0,0,0.5), 0 0 0 ${block.borderWidth || 2}px ${block.borderColor || '#f5e37a'}`;
+                    } else if (bType === 'glow') {
+                        div.style.border = 'none';
+                        div.style.boxShadow = `0 0 20px ${block.borderColor || '#f5e37a'}`;
+                    }
+
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = 'content-wrapper';
+                    contentWrapper.style.position = 'relative';
+                    contentWrapper.style.zIndex = '1';
+                    contentWrapper.style.width = '100%';
+                    contentWrapper.style.height = '100%';
+                    contentWrapper.style.display = 'flex';
+                    contentWrapper.style.flexDirection = 'column';
+
+                    if (!window._initialRender) {
+                        div.classList.add('appear');
+                    }
+
+                    if (block.image) {
+                        const img = document.createElement('img');
+                        img.src = block.image;
+                        img.className = 'block-image ' + block.imagePos;
+                        if (block.type === 'logo') {
+                            img.style.width = '100%';
+                            img.style.height = '100%';
+                            img.style.objectFit = 'contain';
+                            img.style.maxHeight = '100%';
+                            img.style.borderRadius = '0';
+                        } else {
+                            img.style.width = block.imagePos === 'left' ? (block.imageSize || 60) + 'px' : '100%';
+                            img.style.height = block.imagePos === 'left' ? (block.imageSize || 60) + 'px' : 'auto';
+                            img.style.maxHeight = '150px';
+                        }
+                        img.draggable = false;
+                        contentWrapper.appendChild(img);
+                    }
+
+                    if (block.type === 'title') {
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'line name';
+                        nameSpan.style.fontSize = (block.fontSizeName || 40) + 'px';
+                        nameSpan.textContent = block.name;
+                        contentWrapper.appendChild(nameSpan);
+                    } else if (block.type === 'dish') {
+                        if (block.badge) {
+                            const badgeSpan = document.createElement('span');
+                            badgeSpan.className = 'badge-text';
+                            badgeSpan.style.fontSize = (block.fontSizeOther || 14) + 'px';
+                            badgeSpan.textContent = block.badge;
+                            contentWrapper.appendChild(badgeSpan);
+                            const br = document.createElement('br');
+                            contentWrapper.appendChild(br);
+                        }
+                        const nameSpan = document.createElement('span');
+                        nameSpan.className = 'line name';
+                        nameSpan.style.fontSize = (block.fontSizeName || 24) + 'px';
+                        nameSpan.textContent = block.name;
+                        contentWrapper.appendChild(nameSpan);
+
+                        if (block.description) {
+                            const descLines = block.description.split('\n');
+                            descLines.forEach(line => {
+                                if (line.trim() === '') {
+                                    const br = document.createElement('br');
+                                    contentWrapper.appendChild(br);
+                                } else {
+                                    const descSpan = document.createElement('span');
+                                    descSpan.className = 'line description';
+                                    descSpan.style.fontSize = (block.fontSizeOther || 16) + 'px';
+                                    descSpan.textContent = line;
+                                    contentWrapper.appendChild(descSpan);
+                                }
+                            });
+                        }
+
+                        const weightSpan = document.createElement('span');
+                        weightSpan.className = 'line weight';
+                        weightSpan.style.fontSize = (block.fontSizeOther || 16) + 'px';
+                        weightSpan.textContent = block.weight;
+                        contentWrapper.appendChild(weightSpan);
+
+                        const priceSpan = document.createElement('span');
+                        priceSpan.className = 'line price';
+                        priceSpan.style.fontSize = (block.fontSizePrice || block.fontSizeOther || 16) + 'px';
+                        priceSpan.textContent = block.price;
+                        contentWrapper.appendChild(priceSpan);
+                    } else if (block.type === 'logo') {
+                        // только изображение
+                    }
+
+                    div.appendChild(contentWrapper);
+
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'delete-btn';
+                    delBtn.textContent = '×';
+                    delBtn.addEventListener('mousedown', e => e.stopPropagation());
+                    delBtn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        deleteBlock(block.id);
                     });
-                    // Обработчики для смены категории
-                    bgCategorySelect.addEventListener('change', function() {
-                        updatePresetList(this.value);
+                    div.appendChild(delBtn);
+
+                    const positions = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
+                    positions.forEach(pos => {
+                        const handle = document.createElement('div');
+                        handle.className = 'resize-handle ' + pos;
+                        handle.dataset.pos = pos;
+                        handle.addEventListener('mousedown', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            startResize(e, block, pos);
+                        });
+                        handle.addEventListener('touchstart', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            startResize(e, block, pos);
+                        }, { passive: false });
+                        div.appendChild(handle);
                     });
-                    bgPresetSelect.addEventListener('change', function() {
-                        const url = this.value;
-                        if (url) setBackground(url);
-                        else setBackground(null);
+
+                    div.addEventListener('click', (e) => {
+                        if (e.target === delBtn || e.target.closest('.resize-handle')) return;
+                        handleBlockClick(e, block.id);
                     });
-                    // Обработчики для загрузки своего фона
-                    bgUpload.addEventListener('change', function(e) {
+
+                    div.addEventListener('mousedown', (e) => {
+                        if (e.target.closest('.resize-handle') || e.target === delBtn) return;
+                        startDrag(e, block);
+                    });
+                    div.addEventListener('touchstart', (e) => {
+                        if (e.target.closest('.resize-handle') || e.target === delBtn) return;
+                        startDrag(e, block);
+                    }, { passive: false });
+
+                    canvas.appendChild(div);
+                });
+
+                window._initialRender = true;
+                updateSelectedInfo();
+                syncEditFields();
+                updateActivationUI();
+                if (showGrid) canvas.classList.add('show-grid');
+                else canvas.classList.remove('show-grid');
+            }
+
+            // ======================== ВЫДЕЛЕНИЕ ========================
+            function handleBlockClick(e, id) {
+                const ctrl = e.ctrlKey || e.metaKey;
+                const shift = e.shiftKey;
+
+                if (ctrl) {
+                    const idx = selectedIds.indexOf(id);
+                    if (idx === -1) selectedIds.push(id);
+                    else selectedIds.splice(idx, 1);
+                } else if (shift) {
+                    if (selectedIds.length > 0) {
+                        const lastId = selectedIds[selectedIds.length - 1];
+                        const lastIndex = blocks.findIndex(b => b.id === lastId);
+                        const currentIndex = blocks.findIndex(b => b.id === id);
+                        if (lastIndex !== -1 && currentIndex !== -1) {
+                            const min = Math.min(lastIndex, currentIndex);
+                            const max = Math.max(lastIndex, currentIndex);
+                            for (let i = min; i <= max; i++) {
+                                if (!selectedIds.includes(blocks[i].id)) {
+                                    selectedIds.push(blocks[i].id);
+                                }
+                            }
+                        }
+                    } else {
+                        selectedIds = [id];
+                    }
+                } else {
+                    selectedIds = [id];
+                }
+                renderBlocks();
+            }
+
+            function selectAllBlocks() {
+                selectedIds = blocks.map(b => b.id);
+                renderBlocks();
+            }
+
+            function deselectAllBlocks() {
+                selectedIds = [];
+                renderBlocks();
+            }
+
+            function updateSelectedInfo() {
+                if (selectedIds.length === 0) {
+                    selectedInfo.textContent = 'Ничего не выбрано';
+                } else if (selectedIds.length === 1) {
+                    const b = blocks.find(bl => bl.id === selectedIds[0]);
+                    if (b) selectedInfo.textContent = `Выбран блок #${b.id} (${b.name || 'Логотип'})`;
+                    else selectedInfo.textContent = 'Выбран блок';
+                } else {
+                    selectedInfo.textContent = `Выбрано ${selectedIds.length} блоков`;
+                }
+            }
+
+            // ======================== СИНХРОНИЗАЦИЯ ПОЛЕЙ РЕДАКТИРОВАНИЯ ========================
+            function syncEditFields() {
+                const count = selectedIds.length;
+                if (count === 0) {
+                    editName.value = '';
+                    editDescription.value = '';
+                    editWeight.value = '';
+                    editPrice.value = '';
+                    editBadge.value = '';
+                    editShape.value = 'rectangle';
+                    editImagePosition.value = 'left';
+                    editImageSize.value = 60;
+                    blurRadiusInput.value = 0;
+                    blurRadiusValue.textContent = '0';
+                    return;
+                }
+
+                const firstBlock = blocks.find(b => b.id === selectedIds[0]);
+                if (!firstBlock) return;
+
+                editName.value = firstBlock.name || '';
+                editDescription.value = firstBlock.description || '';
+                editWeight.value = firstBlock.weight || '';
+                editPrice.value = firstBlock.price || '';
+                editBadge.value = firstBlock.badge || '';
+                editShape.value = firstBlock.shape || 'rectangle';
+                editImagePosition.value = firstBlock.imagePos || 'left';
+                editImageSize.value = firstBlock.imageSize || 60;
+                opacityBlock.value = firstBlock.opacity ?? 1;
+                opacityBlockValue.textContent = (firstBlock.opacity ?? 1).toFixed(2);
+                bgColorBlock.value = firstBlock.bgColor || '#000000';
+                bgOpacityBlock.value = firstBlock.bgOpacity ?? 0.35;
+                bgOpacityBlockValue.textContent = (firstBlock.bgOpacity ?? 0.35).toFixed(2);
+                brightnessBlock.value = firstBlock.brightness ?? 1;
+                brightnessBlockValue.textContent = (firstBlock.brightness ?? 1).toFixed(2);
+                fontFamily.value = firstBlock.fontFamily || 'Georgia, serif';
+                fontSizeName.value = firstBlock.fontSizeName || 24;
+                fontSizeOther.value = firstBlock.fontSizeOther || 16;
+                fontSizePrice.value = firstBlock.fontSizePrice || 18;
+                textColor.value = firstBlock.color || '#ffffff';
+                shadowBlur.value = firstBlock.shadow || 8;
+                paddingBlock.value = parseInt(firstBlock.padding) || 8;
+                borderType.value = firstBlock.borderType || 'none';
+                borderColor.value = firstBlock.borderColor || '#f5e37a';
+                borderWidth.value = firstBlock.borderWidth || 2;
+                blurRadiusInput.value = firstBlock.blurRadius || 0;
+                blurRadiusValue.textContent = firstBlock.blurRadius || 0;
+
+                if (count > 1) {
+                    selectedInfo.textContent = `Выбрано ${count} блоков (поля показывают первый)`;
+                }
+            }
+
+            // ======================== ПРИМЕНЕНИЕ ИЗМЕНЕНИЙ К ВЫБРАННЫМ БЛОКАМ ========================
+            function applyChangesToSelected(settings) {
+                blocks.forEach(block => {
+                    if (selectedIds.includes(block.id)) {
+                        const el = document.querySelector(`.text-block[data-id="${block.id}"]`);
+                        if (el) {
+                            block.width = el.offsetWidth;
+                            block.height = el.offsetHeight;
+                        }
+                    }
+                });
+
+                blocks.forEach(block => {
+                    if (selectedIds.includes(block.id)) {
+                        Object.keys(settings).forEach(key => {
+                            const val = settings[key];
+                            if (val !== undefined) {
+                                block[key] = val;
+                            }
+                        });
+                    }
+                });
+                renderBlocks();
+            }
+
+            // ======================== ДОБАВЛЕНИЕ / УДАЛЕНИЕ / ДУБЛИРОВАНИЕ ========================
+            function addBlock(type = 'dish') {
+                if (!canAddBlock()) {
+                    showActivationModal();
+                    return;
+                }
+                const rect = canvas.getBoundingClientRect();
+                const w = canvas._width || 400;
+                const h = canvas._height || 600;
+                let left = 20 + Math.random() * (w - 300);
+                let top = 20 + Math.random() * (h - 200);
+                if (showGrid) {
+                    left = snapToGrid(left);
+                    top = snapToGrid(top);
+                }
+                const badge = badgeSelect.value || '';
+                let block;
+                if (type === 'title') {
+                    block = createBlockData('☀️ Заголовок', '', '', '', (w - 200) / 2, 20, 'title', '', 'rectangle');
+                    block.fontSizeName = 40;
+                    block.fontSizeOther = 0;
+                } else if (type === 'logo') {
+                    block = createBlockData('Логотип', '', '', '', left, top, 'logo', '', 'rectangle');
+                    block.fontSizeName = 0;
+                    block.fontSizeOther = 0;
+                    block.fontSizePrice = 0;
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = function(e) {
                         const file = e.target.files[0];
                         if (file) {
                             const reader = new FileReader();
                             reader.onload = function(ev) {
-                                setBackground(ev.target.result);
+                                block.image = ev.target.result;
+                                renderBlocks();
                             };
                             reader.readAsDataURL(file);
+                        } else {
+                            blocks = blocks.filter(b => b.id !== block.id);
+                            renderBlocks();
+                        }
+                    };
+                    input.click();
+                    blocks.push(block);
+                    selectedIds = [block.id];
+                    renderBlocks();
+                    return;
+                } else {
+                    block = createBlockData('Название блюда', 'Состав блюда...', '200 г', '500 ₽', left, top, 'dish', badge, 'rectangle');
+                }
+                blocks.push(block);
+                selectedIds = [block.id];
+                renderBlocks();
+            }
+
+            function deleteBlock(id) {
+                blocks = blocks.filter(b => b.id !== id);
+                selectedIds = selectedIds.filter(sid => sid !== id);
+                renderBlocks();
+            }
+
+            function deleteSelectedBlocks() {
+                if (selectedIds.length === 0) {
+                    alert('Нет выделенных блоков для удаления.');
+                    return;
+                }
+                if (!confirm(`Удалить ${selectedIds.length} блок(ов)?`)) return;
+                blocks = blocks.filter(b => !selectedIds.includes(b.id));
+                selectedIds = [];
+                renderBlocks();
+            }
+
+            function duplicateSelectedBlocks() {
+                if (selectedIds.length === 0) {
+                    alert('Выделите блок(и) для дублирования.');
+                    return;
+                }
+                if (!isActivated() && blocks.length + selectedIds.length > FREE_LIMIT) {
+                    showActivationModal();
+                    return;
+                }
+                const newBlocks = [];
+                selectedIds.forEach(id => {
+                    const original = blocks.find(b => b.id === id);
+                    if (original) {
+                        const copy = JSON.parse(JSON.stringify(original));
+                        copy.id = ++blockIdCounter;
+                        copy.left += 20;
+                        copy.top += 20;
+                        if (showGrid) {
+                            copy.left = snapToGrid(copy.left);
+                            copy.top = snapToGrid(copy.top);
+                        }
+                        newBlocks.push(copy);
+                    }
+                });
+                blocks = blocks.concat(newBlocks);
+                selectedIds = newBlocks.map(b => b.id);
+                renderBlocks();
+            }
+
+            // ======================== ВЫРОВНЯТЬ ПО ЦЕНТРУ ========================
+            function alignSelectedCenter() {
+                if (selectedIds.length === 0) {
+                    alert('Выделите блок(и) для выравнивания.');
+                    return;
+                }
+                const w = canvas._width || 400;
+                const h = canvas._height || 600;
+                const totalW = selectedIds.reduce((sum, id) => {
+                    const b = blocks.find(bl => bl.id === id);
+                    return sum + (b.width || 100);
+                }, 0);
+                const totalH = selectedIds.reduce((sum, id) => {
+                    const b = blocks.find(bl => bl.id === id);
+                    return sum + (b.height || 60);
+                }, 0);
+                const startX = (w - totalW) / 2;
+                const startY = (h - totalH) / 2;
+                let curX = startX;
+                let curY = startY;
+                selectedIds.forEach(id => {
+                    const b = blocks.find(bl => bl.id === id);
+                    if (b) {
+                        b.left = curX;
+                        b.top = curY;
+                        curX += (b.width || 100) + 10;
+                        if (curX + (b.width || 100) > w) {
+                            curX = startX;
+                            curY += (b.height || 60) + 10;
+                        }
+                    }
+                });
+                renderBlocks();
+            }
+
+            // ======================== РЕСАЙЗ ========================
+            function startResize(e, block, pos) {
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (clientX == null || clientY == null) return;
+
+                const blockEl = document.querySelector(`.text-block[data-id="${block.id}"]`);
+                if (!blockEl) return;
+
+                const computed = getComputedStyle(blockEl);
+                const startLeft = block.left;
+                const startTop = block.top;
+                const startWidth = block.width || parseFloat(computed.width) || 200;
+                const startHeight = block.height || parseFloat(computed.height) || 100;
+
+                resizeData = {
+                    block: block,
+                    pos: pos,
+                    startX: clientX,
+                    startY: clientY,
+                    startLeft: startLeft,
+                    startTop: startTop,
+                    startWidth: startWidth,
+                    startHeight: startHeight,
+                    el: blockEl
+                };
+
+                document.addEventListener('mousemove', onResizeMove);
+                document.addEventListener('mouseup', onResizeEnd);
+                document.addEventListener('touchmove', onResizeMove, { passive: false });
+                document.addEventListener('touchend', onResizeEnd);
+                e.preventDefault();
+            }
+
+            function onResizeMove(e) {
+                if (!resizeData) return;
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                animationFrameId = requestAnimationFrame(() => {
+                    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                    if (clientX == null || clientY == null) return;
+
+                    const dx = clientX - resizeData.startX;
+                    const dy = clientY - resizeData.startY;
+                    let newLeft = resizeData.startLeft;
+                    let newTop = resizeData.startTop;
+                    let newWidth = resizeData.startWidth;
+                    let newHeight = resizeData.startHeight;
+
+                    const pos = resizeData.pos;
+                    if (pos.includes('e')) {
+                        newWidth = Math.max(60, resizeData.startWidth + dx);
+                    }
+                    if (pos.includes('w')) {
+                        const delta = -dx;
+                        newWidth = Math.max(60, resizeData.startWidth + delta);
+                        newLeft = resizeData.startLeft - (newWidth - resizeData.startWidth);
+                    }
+                    if (pos.includes('s')) {
+                        newHeight = Math.max(40, resizeData.startHeight + dy);
+                    }
+                    if (pos.includes('n')) {
+                        const delta = -dy;
+                        newHeight = Math.max(40, resizeData.startHeight + delta);
+                        newTop = resizeData.startTop - (newHeight - resizeData.startHeight);
+                    }
+
+                    if (showGrid) {
+                        newLeft = snapToGrid(newLeft);
+                        newTop = snapToGrid(newTop);
+                        newWidth = snapToGrid(newWidth);
+                        newHeight = snapToGrid(newHeight);
+                    }
+
+                    const maxW = canvas._width || 600;
+                    const maxH = canvas._height || 800;
+                    newLeft = Math.max(0, Math.min(newLeft, maxW - newWidth));
+                    newTop = Math.max(0, Math.min(newTop, maxH - newHeight));
+
+                    resizeData.block.left = newLeft;
+                    resizeData.block.top = newTop;
+                    resizeData.block.width = newWidth;
+                    resizeData.block.height = newHeight;
+
+                    const el = resizeData.el;
+                    if (el) {
+                        el.style.left = newLeft + 'px';
+                        el.style.top = newTop + 'px';
+                        el.style.width = newWidth + 'px';
+                        el.style.height = newHeight + 'px';
+                    }
+                    e.preventDefault();
+                });
+            }
+
+            function onResizeEnd() {
+                if (resizeData) {
+                    const block = resizeData.block;
+                    const el = resizeData.el;
+                    if (el) {
+                        const w = parseFloat(el.style.width);
+                        const h = parseFloat(el.style.height);
+                        const l = parseFloat(el.style.left);
+                        const t = parseFloat(el.style.top);
+                        if (!isNaN(w)) block.width = w;
+                        if (!isNaN(h)) block.height = h;
+                        if (!isNaN(l)) block.left = l;
+                        if (!isNaN(t)) block.top = t;
+                    }
+                    resizeData = null;
+                    document.removeEventListener('mousemove', onResizeMove);
+                    document.removeEventListener('mouseup', onResizeEnd);
+                    document.removeEventListener('touchmove', onResizeMove);
+                    document.removeEventListener('touchend', onResizeEnd);
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    renderBlocks();
+                }
+            }
+
+            // ======================== ПЕРЕТАСКИВАНИЕ ========================
+            function startDrag(e, block) {
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (clientX == null || clientY == null) return;
+
+                const el = document.querySelector(`.text-block[data-id="${block.id}"]`);
+                if (!el) return;
+
+                dragData = {
+                    block: block,
+                    startX: clientX,
+                    startY: clientY,
+                    origLeft: block.left,
+                    origTop: block.top,
+                    el: el,
+                    moved: false
+                };
+                el.classList.add('dragging');
+
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragEnd);
+                document.addEventListener('touchmove', onDragMove, { passive: false });
+                document.addEventListener('touchend', onDragEnd);
+                e.preventDefault();
+            }
+
+            function onDragMove(e) {
+                if (!dragData) return;
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                animationFrameId = requestAnimationFrame(() => {
+                    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                    if (clientX == null || clientY == null) return;
+
+                    const dx = clientX - dragData.startX;
+                    const dy = clientY - dragData.startY;
+                    let newLeft = dragData.origLeft + dx;
+                    let newTop = dragData.origTop + dy;
+
+                    const el = dragData.el;
+                    const w = parseFloat(el.style.width) || 200;
+                    const h = parseFloat(el.style.height) || 100;
+                    const maxW = canvas._width || 600;
+                    const maxH = canvas._height || 800;
+
+                    if (showGrid) {
+                        newLeft = snapToGrid(newLeft);
+                        newTop = snapToGrid(newTop);
+                    }
+                    newLeft = Math.max(0, Math.min(newLeft, maxW - w));
+                    newTop = Math.max(0, Math.min(newTop, maxH - h));
+
+                    dragData.block.left = newLeft;
+                    dragData.block.top = newTop;
+                    el.style.left = newLeft + 'px';
+                    el.style.top = newTop + 'px';
+                    dragData.moved = true;
+                    e.preventDefault();
+                });
+            }
+
+            function onDragEnd() {
+                if (dragData) {
+                    dragData.el.classList.remove('dragging');
+                    dragData = null;
+                    document.removeEventListener('mousemove', onDragMove);
+                    document.removeEventListener('mouseup', onDragEnd);
+                    document.removeEventListener('touchmove', onDragMove);
+                    document.removeEventListener('touchend', onDragEnd);
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                }
+            }
+
+            // ======================== ШАБЛОНЫ ========================
+            const TEMPLATES = {
+                luxury: {
+                    color: '#ffd700',
+                    bgColor: '#1a1a1a',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSizeName: 28,
+                    fontSizeOther: 18,
+                    fontSizePrice: 22,
+                    shadow: 12,
+                    brightness: 1.2,
+                    opacity: 1
+                },
+                minimal: {
+                    color: '#333333',
+                    bgColor: '#ffffff',
+                    bgOpacity: 0.8,
+                    fontFamily: "'Inter', sans-serif",
+                    fontSizeName: 22,
+                    fontSizeOther: 14,
+                    fontSizePrice: 18,
+                    shadow: 4,
+                    brightness: 1,
+                    opacity: 1
+                },
+                summer: {
+                    color: '#1a237e',
+                    bgColor: '#fff8e1',
+                    bgOpacity: 0.6,
+                    fontFamily: "'Caveat', cursive",
+                    fontSizeName: 30,
+                    fontSizeOther: 18,
+                    fontSizePrice: 20,
+                    shadow: 6,
+                    brightness: 1.1,
+                    opacity: 0.95
+                },
+                italian: {
+                    color: '#4e342e',
+                    bgColor: '#ffccbc',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSizeName: 26,
+                    fontSizeOther: 16,
+                    fontSizePrice: 18,
+                    shadow: 8,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                vintage: {
+                    color: '#3e2723',
+                    bgColor: '#d7ccc8',
+                    bgOpacity: 0.75,
+                    fontFamily: "'Lora', serif",
+                    fontSizeName: 24,
+                    fontSizeOther: 15,
+                    fontSizePrice: 16,
+                    shadow: 6,
+                    brightness: 0.9,
+                    opacity: 0.9
+                },
+                fusion: {
+                    color: '#ff4081',
+                    bgColor: '#212121',
+                    bgOpacity: 0.5,
+                    fontFamily: "'Russo One', sans-serif",
+                    fontSizeName: 32,
+                    fontSizeOther: 18,
+                    fontSizePrice: 22,
+                    shadow: 10,
+                    brightness: 1.3,
+                    opacity: 1
+                },
+                classic: {
+                    color: '#f5e37a',
+                    bgColor: '#0d47a1',
+                    bgOpacity: 0.6,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSizeName: 28,
+                    fontSizeOther: 16,
+                    fontSizePrice: 20,
+                    shadow: 10,
+                    brightness: 1,
+                    opacity: 1
+                },
+                green: {
+                    color: '#1b5e20',
+                    bgColor: '#c8e6c9',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSizeName: 26,
+                    fontSizeOther: 16,
+                    fontSizePrice: 18,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                chocolate: {
+                    color: '#4e2e1e',
+                    bgColor: '#d7b99a',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Bitter', serif",
+                    fontSizeName: 28,
+                    fontSizeOther: 16,
+                    fontSizePrice: 18,
+                    shadow: 8,
+                    brightness: 0.9,
+                    opacity: 0.95
+                },
+                burgundy: {
+                    color: '#fff0f0',
+                    bgColor: '#4a0e2e',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSizeName: 28,
+                    fontSizeOther: 16,
+                    fontSizePrice: 20,
+                    shadow: 10,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                gold: {
+                    color: '#ffd700',
+                    bgColor: '#1a1a1a',
+                    bgOpacity: 0.6,
+                    fontFamily: "'Raleway', sans-serif",
+                    fontSizeName: 30,
+                    fontSizeOther: 18,
+                    fontSizePrice: 22,
+                    shadow: 12,
+                    brightness: 1.2,
+                    opacity: 1
+                },
+                floral: {
+                    color: '#4a2e3a',
+                    bgColor: '#fce4ec',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Quicksand', sans-serif",
+                    fontSizeName: 26,
+                    fontSizeOther: 16,
+                    fontSizePrice: 18,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.9
+                }
+            };
+
+            function applyTemplate(templateName) {
+                if (!templateName || !TEMPLATES[templateName]) return;
+                const tmpl = TEMPLATES[templateName];
+                blocks.forEach(block => {
+                    Object.keys(tmpl).forEach(key => {
+                        block[key] = tmpl[key];
+                    });
+                });
+                fontFamily.value = tmpl.fontFamily;
+                fontSizeName.value = tmpl.fontSizeName;
+                fontSizeOther.value = tmpl.fontSizeOther;
+                fontSizePrice.value = tmpl.fontSizePrice;
+                textColor.value = tmpl.color;
+                shadowBlur.value = tmpl.shadow;
+                opacityBlock.value = tmpl.opacity;
+                opacityBlockValue.textContent = tmpl.opacity.toFixed(2);
+                bgColorBlock.value = tmpl.bgColor;
+                bgOpacityBlock.value = tmpl.bgOpacity;
+                bgOpacityBlockValue.textContent = tmpl.bgOpacity.toFixed(2);
+                brightnessBlock.value = tmpl.brightness;
+                brightnessBlockValue.textContent = tmpl.brightness.toFixed(2);
+
+                renderBlocks();
+                alert(`Применён шаблон "${templateSelect.options[templateSelect.selectedIndex].text}"`);
+            }
+
+            applyTemplateBtn.addEventListener('click', function() {
+                const val = templateSelect.value;
+                if (!val) { alert('Выберите шаблон.'); return; }
+                applyTemplate(val);
+            });
+
+            // ======================== ФОТО БЛЮДА ========================
+            editImageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    if (selectedIds.length === 0) {
+                        alert('Сначала выделите блок(и), к которым применить фото.');
+                        return;
+                    }
+                    blocks.forEach(block => {
+                        if (selectedIds.includes(block.id)) {
+                            block.image = dataUrl;
+                            block.imagePos = editImagePosition.value;
+                            block.imageSize = parseInt(editImageSize.value) || 60;
                         }
                     });
-                    clearBgBtn.addEventListener('click', function() {
-                        setBackground(null);
-                        bgUpload.value = '';
-                        bgPresetSelect.value = '';
-                    });
-                    // Остальные обработчики (добавление блоков, экспорт и т.д.) уже есть в коде.
-                }).catch(err => {
-                    console.error('Ошибка инициализации Firebase:', err);
-                    // Даже если Firebase не доступна, можно запустить конструктор с локальными данными
-                    // (для этого нужно предусмотреть fallback, но мы не будем усложнять)
+                    renderBlocks();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            removeImageBtn.addEventListener('click', function() {
+                if (selectedIds.length === 0) { alert('Выделите блок(и) для удаления фото.'); return; }
+                blocks.forEach(block => {
+                    if (selectedIds.includes(block.id)) {
+                        block.image = null;
+                    }
                 });
+                renderBlocks();
+            });
+
+            // ======================== СОХРАНЕНИЕ / ЗАГРУЗКА ПРОЕКТА ========================
+            function getProjectData() {
+                return {
+                    blocks: blocks,
+                    bgImage: bgImage.style.backgroundImage,
+                    version: '1.0'
+                };
+            }
+
+            function saveProjectToFile() {
+                const data = getProjectData();
+                const json = JSON.stringify(data);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const name = prompt('Введите название проекта:', `Меню_${new Date().toISOString().slice(0,10)}`);
+                a.download = (name || 'menu_project') + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                addToHistory(name || 'Безымянный проект', data);
+                alert('Проект сохранён и добавлен в историю.');
+            }
+
+            function loadProjectFromFile(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        loadProjectFromData(data);
+                    } catch (err) {
+                        alert('Ошибка загрузки: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            saveProjectBtn.addEventListener('click', saveProjectToFile);
+            loadProjectBtn.addEventListener('click', function() {
+                projectFileInput.click();
+            });
+            projectFileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    loadProjectFromFile(e.target.files[0]);
+                }
+                e.target.value = '';
+            });
+
+            function restoreLastProject() {
+                const saved = localStorage.getItem('menu_project');
+                if (saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        if (data.blocks && Array.isArray(data.blocks)) {
+                            blocks = data.blocks;
+                            let maxId = 0;
+                            blocks.forEach(b => { if (b.id > maxId) maxId = b.id; });
+                            blockIdCounter = maxId;
+                            if (data.bgImage) {
+                                const match = data.bgImage.match(/url\(["']?(.*?)["']?\)/);
+                                if (match && match[1]) {
+                                    setBackground(match[1]);
+                                }
+                            }
+                            selectedIds = [];
+                            renderBlocks();
+                            console.log('Проект восстановлен из localStorage.');
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            // ======================== ЭКСПОРТ PNG ========================
+            function exportPNG() {
+                if (blocks.length === 0 && !bgImage.style.backgroundImage) {
+                    alert('Холст пуст. Добавьте блоки или загрузите фон.');
+                    return;
+                }
+                let targetWidth, targetHeight;
+                if (exportFormat === '9:16') {
+                    targetWidth = 1080;
+                    targetHeight = 1920;
+                } else if (exportFormat === '16:9') {
+                    targetWidth = 1920;
+                    targetHeight = 1080;
+                } else if (exportFormat === 'A4P') {
+                    targetWidth = 2480;
+                    targetHeight = 3508;
+                } else if (exportFormat === 'A4L') {
+                    targetWidth = 3508;
+                    targetHeight = 2480;
+                } else {
+                    targetWidth = 1080;
+                    targetHeight = 1920;
+                }
+
+                const scale = parseInt(pngScale.value) || 3;
+                const canvasW = canvas._width || canvas.clientWidth;
+                const canvasH = canvas._height || canvas.clientHeight;
+
+                html2canvas(canvas, {
+                    scale: scale,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false,
+                    allowTaint: true,
+                    width: canvasW,
+                    height: canvasH
+                }).then(sourceCanvas => {
+                    const destCanvas = document.createElement('canvas');
+                    destCanvas.width = targetWidth;
+                    destCanvas.height = targetHeight;
+                    const ctx = destCanvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
+                    const link = document.createElement('a');
+                    link.download = `menu_${exportFormat.replace(':','x')}_${scale}x.png`;
+                    link.href = destCanvas.toDataURL('image/png');
+                    link.click();
+                }).catch(err => {
+                    alert('Ошибка при создании PNG. Проверьте консоль.');
+                    console.error(err);
+                });
+            }
+
+            exportPngBtn.addEventListener('click', exportPNG);
+
+            // ======================== ПРЕДПРОСМОТР ========================
+            previewBtn.addEventListener('click', function() {
+                if (blocks.length === 0 && !bgImage.style.backgroundImage) {
+                    alert('Холст пуст. Добавьте блоки или загрузите фон.');
+                    return;
+                }
+                let targetWidth, targetHeight;
+                if (exportFormat === '9:16') {
+                    targetWidth = 540;
+                    targetHeight = 960;
+                } else if (exportFormat === '16:9') {
+                    targetWidth = 960;
+                    targetHeight = 540;
+                } else if (exportFormat === 'A4P') {
+                    targetWidth = 595;
+                    targetHeight = 842;
+                } else if (exportFormat === 'A4L') {
+                    targetWidth = 842;
+                    targetHeight = 595;
+                } else {
+                    targetWidth = 540;
+                    targetHeight = 960;
+                }
+                const canvasW = canvas._width || canvas.clientWidth;
+                const canvasH = canvas._height || canvas.clientHeight;
+
+                html2canvas(canvas, {
+                    scale: 1.5,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false,
+                    allowTaint: true,
+                    width: canvasW,
+                    height: canvasH
+                }).then(sourceCanvas => {
+                    const destCanvas = document.createElement('canvas');
+                    destCanvas.width = targetWidth;
+                    destCanvas.height = targetHeight;
+                    const ctx = destCanvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
+                    previewImage.src = destCanvas.toDataURL('image/png');
+                    previewModal.classList.add('active');
+                }).catch(err => {
+                    alert('Ошибка создания предпросмотра.');
+                    console.error(err);
+                });
+            });
+
+            modalClose.addEventListener('click', () => previewModal.classList.remove('active'));
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) previewModal.classList.remove('active');
+            });
+
+            // ======================== ЭКСПОРТ PDF ========================
+            exportPdfBtn.addEventListener('click', function() {
+                if (blocks.length === 0 && !bgImage.style.backgroundImage) {
+                    alert('Холст пуст. Добавьте блоки или загрузите фон.');
+                    return;
+                }
+                if (typeof window.jspdf === 'undefined') {
+                    alert('Библиотека jsPDF не загружена.');
+                    return;
+                }
+                const { jsPDF } = window.jspdf;
+                let targetWidth, targetHeight;
+                if (exportFormat === '9:16') {
+                    targetWidth = 1080;
+                    targetHeight = 1920;
+                } else if (exportFormat === '16:9') {
+                    targetWidth = 1920;
+                    targetHeight = 1080;
+                } else if (exportFormat === 'A4P') {
+                    targetWidth = 2480;
+                    targetHeight = 3508;
+                } else if (exportFormat === 'A4L') {
+                    targetWidth = 3508;
+                    targetHeight = 2480;
+                } else {
+                    targetWidth = 1080;
+                    targetHeight = 1920;
+                }
+                const canvasW = canvas._width || canvas.clientWidth;
+                const canvasH = canvas._height || canvas.clientHeight;
+
+                html2canvas(canvas, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false,
+                    allowTaint: true,
+                    width: canvasW,
+                    height: canvasH
+                }).then(sourceCanvas => {
+                    const destCanvas = document.createElement('canvas');
+                    destCanvas.width = targetWidth;
+                    destCanvas.height = targetHeight;
+                    const ctx = destCanvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
+                    const imgData = destCanvas.toDataURL('image/jpeg', 0.95);
+                    const pdf = new jsPDF('p', 'px', [targetWidth, targetHeight]);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, targetWidth, targetHeight);
+                    pdf.save(`menu_${exportFormat.replace(':','x')}.pdf`);
+                }).catch(err => {
+                    alert('Ошибка создания PDF.');
+                    console.error(err);
+                });
+            });
+
+            // ======================== ПЕЧАТЬ ========================
+            printBtn.addEventListener('click', () => window.print());
+
+            // ======================== ОЧИСТКА ВСЕХ БЛОКОВ ========================
+            clearBtn.addEventListener('click', function() {
+                if (confirm('Удалить все блоки?')) {
+                    blocks = [];
+                    selectedIds = [];
+                    renderBlocks();
+                }
+            });
+
+            // ======================== ФОН ========================
+            bgUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        setBackground(ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            clearBgBtn.addEventListener('click', function() {
+                setBackground(null);
+                bgUpload.value = '';
+                bgPresetSelect.value = '';
+            });
+
+            // ======================== ОБНОВЛЕНИЕ ВЫБРАННЫХ БЛОКОВ ========================
+            updateBlockBtn.addEventListener('click', function() {
+                if (selectedIds.length === 0) {
+                    alert('Нет выделенных блоков для обновления.');
+                    return;
+                }
+                const settings = {};
+                settings.name = editName.value;
+                settings.description = editDescription.value;
+                settings.weight = editWeight.value;
+                settings.price = editPrice.value;
+                settings.badge = editBadge.value;
+                settings.shape = editShape.value;
+                settings.fontFamily = fontFamily.value;
+                settings.fontSizeName = parseInt(fontSizeName.value) || 10;
+                settings.fontSizeOther = parseInt(fontSizeOther.value) || 8;
+                settings.fontSizePrice = parseInt(fontSizePrice.value) || 8;
+                settings.color = textColor.value;
+                settings.shadow = parseInt(shadowBlur.value) || 0;
+                settings.opacity = parseFloat(opacityBlock.value) || 0;
+                settings.bgColor = bgColorBlock.value;
+                settings.bgOpacity = parseFloat(bgOpacityBlock.value) || 0;
+                settings.brightness = parseFloat(brightnessBlock.value) || 0.3;
+                settings.imagePos = editImagePosition.value;
+                settings.imageSize = parseInt(editImageSize.value) || 20;
+                settings.padding = paddingBlock.value + 'px';
+                settings.borderType = borderType.value;
+                settings.borderColor = borderColor.value;
+                settings.borderWidth = parseInt(borderWidth.value) || 1;
+                settings.blurRadius = parseInt(blurRadiusInput.value) || 0;
+
+                applyChangesToSelected(settings);
+            });
+
+            // ======================== УДАЛЕНИЕ И ДУБЛИРОВАНИЕ ========================
+            deleteSelectedBtn.addEventListener('click', deleteSelectedBlocks);
+            duplicateBtn.addEventListener('click', duplicateSelectedBlocks);
+
+            // ======================== ВЫДЕЛИТЬ / СНЯТЬ ВСЕ ========================
+            selectAllBtn.addEventListener('click', selectAllBlocks);
+            deselectAllBtn.addEventListener('click', deselectAllBlocks);
+
+            // ======================== КНОПКИ ДОБАВЛЕНИЯ ========================
+            addBlockBtn.addEventListener('click', () => addBlock('dish'));
+            addTitleBtn.addEventListener('click', () => addBlock('title'));
+            addLogoBtn.addEventListener('click', () => addBlock('logo'));
+
+            // ======================== ВЫРОВНЯТЬ ПО ЦЕНТРУ ========================
+            alignCenterBtn.addEventListener('click', alignSelectedCenter);
+
+            // ======================== СЕТКА ========================
+            toggleGridBtn.addEventListener('click', function() {
+                showGrid = !showGrid;
+                this.textContent = showGrid ? '📐 Сетка вкл' : '📐 Сетка';
+                canvas.classList.toggle('show-grid', showGrid);
+                renderBlocks();
+            });
+
+            // ======================== ФОРМАТ ЭКСПОРТА ========================
+            formatBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    formatBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    exportFormat = this.dataset.format;
+                    recalcPositionsForNewFormat();
+                });
+            });
+
+            // ======================== РЕАКТИВНОЕ ОБНОВЛЕНИЕ СТИЛЕЙ ========================
+            function debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            const reactiveUpdate = debounce(function() {
+                if (selectedIds.length === 0) return;
+                const settings = {
+                    fontFamily: fontFamily.value,
+                    fontSizeName: parseInt(fontSizeName.value) || 10,
+                    fontSizeOther: parseInt(fontSizeOther.value) || 8,
+                    fontSizePrice: parseInt(fontSizePrice.value) || 8,
+                    color: textColor.value,
+                    shadow: parseInt(shadowBlur.value) || 0,
+                    opacity: parseFloat(opacityBlock.value) || 0,
+                    bgColor: bgColorBlock.value,
+                    bgOpacity: parseFloat(bgOpacityBlock.value) || 0,
+                    brightness: parseFloat(brightnessBlock.value) || 0.3,
+                    padding: paddingBlock.value + 'px',
+                    borderType: borderType.value,
+                    borderColor: borderColor.value,
+                    borderWidth: parseInt(borderWidth.value) || 1,
+                    blurRadius: parseInt(blurRadiusInput.value) || 0
+                };
+                applyChangesToSelected(settings);
+            }, 200);
+
+            [fontFamily, fontSizeName, fontSizeOther, fontSizePrice, textColor, shadowBlur,
+             opacityBlock, bgColorBlock, bgOpacityBlock, brightnessBlock, paddingBlock,
+             borderType, borderColor, borderWidth, blurRadiusInput].forEach(el => {
+                el.addEventListener('input', reactiveUpdate);
+                el.addEventListener('change', reactiveUpdate);
+            });
+
+            blurRadiusInput.addEventListener('input', function() {
+                blurRadiusValue.textContent = this.value;
+            });
+
+            // ======================== ГОРЯЧИЕ КЛАВИШИ ========================
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                    e.preventDefault();
+                    selectAllBlocks();
+                }
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    if (selectedIds.length > 0 && !e.target.closest('input, textarea, select')) {
+                        e.preventDefault();
+                        deleteSelectedBlocks();
+                    }
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                    if (selectedIds.length > 0 && !e.target.closest('input, textarea, select')) {
+                        e.preventDefault();
+                        const data = blocks.filter(b => selectedIds.includes(b.id));
+                        localStorage.setItem('menu_clipboard', JSON.stringify(data));
+                        alert(`Скопировано ${data.length} блоков.`);
+                    }
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+                    if (!e.target.closest('input, textarea, select')) {
+                        e.preventDefault();
+                        const raw = localStorage.getItem('menu_clipboard');
+                        if (raw) {
+                            try {
+                                const data = JSON.parse(raw);
+                                if (data.length === 0) return;
+                                if (!isActivated() && blocks.length + data.length > FREE_LIMIT) {
+                                    showActivationModal();
+                                    return;
+                                }
+                                const newBlocks = data.map(orig => {
+                                    const copy = JSON.parse(JSON.stringify(orig));
+                                    copy.id = ++blockIdCounter;
+                                    copy.left += 30;
+                                    copy.top += 30;
+                                    if (showGrid) {
+                                        copy.left = snapToGrid(copy.left);
+                                        copy.top = snapToGrid(copy.top);
+                                    }
+                                    return copy;
+                                });
+                                blocks = blocks.concat(newBlocks);
+                                selectedIds = newBlocks.map(b => b.id);
+                                renderBlocks();
+                            } catch (e) { console.warn('Ошибка вставки', e); }
+                        }
+                    }
+                }
+            });
+
+            // ======================== ИНИЦИАЛИЗАЦИЯ ========================
+            window.addEventListener('load', function() {
+                updateCanvasSize();
+                restoreLastProject();
+                renderHistory();
+                if (blocks.length === 0) {
+                    addBlock('dish');
+                }
+                if (blocks.length > 0) {
+                    selectedIds = [blocks[0].id];
+                    renderBlocks();
+                } else {
+                    renderBlocks();
+                }
+                updateActivationUI();
+                if (showGrid) canvas.classList.add('show-grid');
 
                 window.addEventListener('resize', function() {
                     updateCanvasSize();
                     recalcPositionsForNewFormat();
                 });
             });
-
-            // Здесь должны быть все остальные функции конструктора (они не меняются)
-            // Я их не вставляю для краткости, но в вашем итоговом файле они все должны быть.
 
         })();
     </script>
