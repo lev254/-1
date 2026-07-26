@@ -1057,36 +1057,46 @@
                 bgPresetSelect.value = '';
             }
 
-            // ======================== УСТАНОВКА ФОНА С ПРЕДЗАГРУЗКОЙ ========================
+            // ======================== УСТАНОВКА ФОНА (ИСПРАВЛЕННАЯ) ========================
+            let currentBgUrl = null;
+
             function setBackground(url) {
                 if (!url) {
                     bgImage.style.backgroundImage = '';
                     currentBgUrl = null;
+                    syncPresetSelect();
                     return;
                 }
                 // Если такой же URL уже установлен, не перезагружаем
                 if (currentBgUrl === url) return;
 
-                // Создаём объект Image для предзагрузки
+                // Сразу устанавливаем фон (без ожидания загрузки) – для быстрого отклика
+                bgImage.style.backgroundImage = 'url(' + url + ')';
+                // Сохраняем текущий URL, чтобы не перезагружать
+                currentBgUrl = url;
+                syncPresetSelect();
+
+                // Параллельно пробуем предзагрузить изображение, чтобы убедиться, что оно доступно
+                // Если загрузка не удастся, фон уже будет отображаться (пусть даже с ошибкой),
+                // но мы не будем показывать alert.
                 const img = new Image();
-                img.crossOrigin = 'anonymous'; // пытаемся обойти CORS
+                let timeoutId = setTimeout(() => {
+                    // Если загрузка зависла, просто ничего не делаем
+                    console.warn('Предзагрузка фона зависла:', url);
+                }, 10000); // 10 секунд таймаут
+
                 img.onload = function() {
-                    // Изображение загружено – устанавливаем фон
-                    bgImage.style.backgroundImage = 'url(' + url + ')';
-                    currentBgUrl = url;
-                    // Синхронизируем выбор в списке
-                    syncPresetSelect();
+                    clearTimeout(timeoutId);
+                    console.log('Фон успешно загружен:', url);
+                    // Можно дополнительно обновить фон, если нужно
                 };
                 img.onerror = function() {
-                    console.warn('Не удалось загрузить фон:', url);
-                    // Можно показать сообщение пользователю
-                    alert('Не удалось загрузить изображение. Проверьте ссылку или попробуйте другую.');
+                    clearTimeout(timeoutId);
+                    console.warn('Не удалось загрузить фон (но он уже установлен):', url);
+                    // Не показываем alert, чтобы не раздражать пользователя
                 };
                 img.src = url;
             }
-
-            // Переменная для хранения текущего URL фона
-            let currentBgUrl = null;
 
             // Синхронизация выпадающего списка с текущим фоном
             function syncPresetSelect() {
@@ -1096,7 +1106,6 @@
                     const urlMatch = currentBg.match(/url\(["']?(.*?)["']?\)/);
                     if (urlMatch && urlMatch[1]) {
                         const url = urlMatch[1];
-                        // Ищем среди опций select
                         for (const option of bgPresetSelect.options) {
                             if (option.value === url) {
                                 bgPresetSelect.value = url;
@@ -1105,7 +1114,6 @@
                             }
                         }
                         if (!found) {
-                            // Если URL не найден в списке, возможно, это загруженный файл
                             bgPresetSelect.value = '';
                         }
                     }
@@ -1116,14 +1124,10 @@
             }
 
             // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
-            // При смене категории обновляем список фонов
             bgCategorySelect.addEventListener('change', function() {
                 updatePresetList(this.value);
-                // Если в новой категории есть фоны и был выбран какой-то, можно автоматически установить первый?
-                // Лучше оставить на усмотрение пользователя
             });
 
-            // При выборе фона из списка устанавливаем его
             bgPresetSelect.addEventListener('change', function() {
                 const url = this.value;
                 if (url) {
