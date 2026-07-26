@@ -599,17 +599,25 @@
             <details open>
                 <summary>📁 Фон</summary>
                 <div class="content">
-                    <!-- НОВОЕ: выпадающий список с готовыми фонами -->
-                    <label>Готовые фоны (баня)</label>
+                    <!-- НОВОЕ: категории и фоны -->
+                    <label>Категория фона</label>
+                    <select id="bgCategorySelect">
+                        <option value="bath">Баня</option>
+                        <option value="restaurant">Ресторан</option>
+                        <option value="cafe">Кафе</option>
+                        <option value="shaurma">Шаурмичная</option>
+                        <option value="japanese">Японская кухня</option>
+                        <option value="italian">Итальянская кухня</option>
+                        <option value="russian">Русская кухня</option>
+                        <option value="pub">Паб</option>
+                        <option value="canteen">Столовая</option>
+                    </select>
+
+                    <label>Готовые фоны</label>
                     <select id="bgPresetSelect">
                         <option value="">-- Выберите фон --</option>
-                        <option value="1">Банный фон 1</option>
-                        <option value="2">Банный фон 2</option>
-                        <option value="3">Банный фон 3</option>
-                        <option value="4">Банный фон 4</option>
-                        <option value="5">Банный фон 5</option>
-                        <option value="6">Банный фон 6</option>
                     </select>
+
                     <label>Или загрузите своё фото</label>
                     <input type="file" id="bgUpload" accept="image/*" />
                     <button class="btn btn-clear" id="clearBgBtn" style="width:100%; margin-top:8px;">🗑 Удалить фон</button>
@@ -933,6 +941,7 @@
             const gridOverlay = document.getElementById('gridOverlay');
             const bgUpload = document.getElementById('bgUpload');
             const clearBgBtn = document.getElementById('clearBgBtn');
+            const bgCategorySelect = document.getElementById('bgCategorySelect');
             const bgPresetSelect = document.getElementById('bgPresetSelect');
             const addBlockBtn = document.getElementById('addBlockBtn');
             const addTitleBtn = document.getElementById('addTitleBtn');
@@ -1001,33 +1010,83 @@
             const alignCenterBtn = document.getElementById('alignCenterBtn');
             const toggleGridBtn = document.getElementById('toggleGridBtn');
 
-            // ======================== МАССИВ ГОТОВЫХ ФОНОВ ========================
-            const BG_PRESETS = {
-                '1': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/91d9b63c-c369-4155-997f-c8eff0bce9d3.jpg',
-                '2': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/f95d9603-7c27-40e5-a6e4-f6ea691566b1.jpg',
-                '3': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/009d6962-ca62-4160-a74a-c1094d33760a.jpg',
-                '4': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/b18d89f2-9fcb-42a0-87b7-e7af154f54a8.jpg',
-                '5': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/19ae0d43-0cd9-4c2b-8a91-5192def545da.jpg',
-                '6': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/1d8b7733-7308-4c05-acca-c2e5e000b71e.jpg'
+            // ======================== БАЗА ДАННЫХ ФОНОВ ПО КАТЕГОРИЯМ ========================
+            const BG_DATA = {
+                bath: {
+                    label: 'Баня',
+                    presets: {
+                        'b1': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/91d9b63c-c369-4155-997f-c8eff0bce9d3.jpg',
+                        'b2': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/f95d9603-7c27-40e5-a6e4-f6ea691566b1.jpg',
+                        'b3': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/009d6962-ca62-4160-a74a-c1094d33760a.jpg',
+                        'b4': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/b18d89f2-9fcb-42a0-87b7-e7af154f54a8.jpg',
+                        'b5': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/19ae0d43-0cd9-4c2b-8a91-5192def545da.jpg',
+                        'b6': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/1d8b7733-7308-4c05-acca-c2e5e000b71e.jpg'
+                    }
+                },
+                restaurant: { label: 'Ресторан', presets: {} },
+                cafe: { label: 'Кафе', presets: {} },
+                shaurma: { label: 'Шаурмичная', presets: {} },
+                japanese: { label: 'Японская кухня', presets: {} },
+                italian: { label: 'Итальянская кухня', presets: {} },
+                russian: { label: 'Русская кухня', presets: {} },
+                pub: { label: 'Паб', presets: {} },
+                canteen: { label: 'Столовая', presets: {} }
             };
 
-            // Переменная для хранения текущего URL фона (чтобы не переустанавливать повторно)
-            let currentBgUrl = null;
-
-            // Функция для установки фона по URL (с проверкой на изменение)
-            function setBackground(url) {
-                // Если URL не изменился и не null, ничего не делаем (избегаем лишней загрузки)
-                if (url === currentBgUrl) return;
-                if (url) {
-                    bgImage.style.backgroundImage = 'url(' + url + ')';
-                    currentBgUrl = url;
+            // ======================== ФУНКЦИЯ ОБНОВЛЕНИЯ СПИСКА ФОНОВ ========================
+            function updatePresetList(categoryKey) {
+                const category = BG_DATA[categoryKey];
+                if (!category) return;
+                const presets = category.presets;
+                bgPresetSelect.innerHTML = '<option value="">-- Выберите фон --</option>';
+                if (Object.keys(presets).length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = '📭 Нет фонов для этой категории';
+                    opt.disabled = true;
+                    bgPresetSelect.appendChild(opt);
                 } else {
+                    for (const [key, url] of Object.entries(presets)) {
+                        const opt = document.createElement('option');
+                        opt.value = url;
+                        opt.textContent = 'Фон ' + key;
+                        bgPresetSelect.appendChild(opt);
+                    }
+                }
+                // Сбросить текущий выбор, если он не соответствует новой категории
+                bgPresetSelect.value = '';
+            }
+
+            // ======================== УСТАНОВКА ФОНА С ПРЕДЗАГРУЗКОЙ ========================
+            function setBackground(url) {
+                if (!url) {
                     bgImage.style.backgroundImage = '';
                     currentBgUrl = null;
+                    return;
                 }
-                // Синхронизируем выбор в списке
-                syncPresetSelect();
+                // Если такой же URL уже установлен, не перезагружаем
+                if (currentBgUrl === url) return;
+
+                // Создаём объект Image для предзагрузки
+                const img = new Image();
+                img.crossOrigin = 'anonymous'; // пытаемся обойти CORS
+                img.onload = function() {
+                    // Изображение загружено – устанавливаем фон
+                    bgImage.style.backgroundImage = 'url(' + url + ')';
+                    currentBgUrl = url;
+                    // Синхронизируем выбор в списке
+                    syncPresetSelect();
+                };
+                img.onerror = function() {
+                    console.warn('Не удалось загрузить фон:', url);
+                    // Можно показать сообщение пользователю
+                    alert('Не удалось загрузить изображение. Проверьте ссылку или попробуйте другую.');
+                };
+                img.src = url;
             }
+
+            // Переменная для хранения текущего URL фона
+            let currentBgUrl = null;
 
             // Синхронизация выпадающего списка с текущим фоном
             function syncPresetSelect() {
@@ -1037,12 +1096,17 @@
                     const urlMatch = currentBg.match(/url\(["']?(.*?)["']?\)/);
                     if (urlMatch && urlMatch[1]) {
                         const url = urlMatch[1];
-                        for (const [key, presetUrl] of Object.entries(BG_PRESETS)) {
-                            if (url === presetUrl) {
-                                bgPresetSelect.value = key;
+                        // Ищем среди опций select
+                        for (const option of bgPresetSelect.options) {
+                            if (option.value === url) {
+                                bgPresetSelect.value = url;
                                 found = true;
                                 break;
                             }
+                        }
+                        if (!found) {
+                            // Если URL не найден в списке, возможно, это загруженный файл
+                            bgPresetSelect.value = '';
                         }
                     }
                 }
@@ -1051,15 +1115,26 @@
                 }
             }
 
-            // Обработчик выбора пресета
+            // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
+            // При смене категории обновляем список фонов
+            bgCategorySelect.addEventListener('change', function() {
+                updatePresetList(this.value);
+                // Если в новой категории есть фоны и был выбран какой-то, можно автоматически установить первый?
+                // Лучше оставить на усмотрение пользователя
+            });
+
+            // При выборе фона из списка устанавливаем его
             bgPresetSelect.addEventListener('change', function() {
-                const val = this.value;
-                if (val && BG_PRESETS[val]) {
-                    setBackground(BG_PRESETS[val]);
+                const url = this.value;
+                if (url) {
+                    setBackground(url);
                 } else {
                     setBackground(null);
                 }
             });
+
+            // Инициализация: загружаем фоны для текущей категории (по умолчанию 'bath')
+            updatePresetList('bath');
 
             // ======================== СИСТЕМА АКТИВАЦИИ ========================
             const FREE_LIMIT = 3;
@@ -1166,7 +1241,6 @@
                         blocks.forEach(b => { if (b.id > maxId) maxId = b.id; });
                         blockIdCounter = maxId;
                         if (data.bgImage) {
-                            // извлекаем URL из строки backgroundImage
                             const match = data.bgImage.match(/url\(["']?(.*?)["']?\)/);
                             if (match && match[1]) {
                                 setBackground(match[1]);
