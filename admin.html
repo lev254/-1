@@ -240,7 +240,8 @@
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('adminPanel').classList.add('active');
                 document.getElementById('loginError').style.display = 'none';
-                loadData();
+                // Загружаем данные и инициализируем, если пусто
+                initDataAndLoad();
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
@@ -256,7 +257,39 @@
             document.getElementById('passwordInput').value = '';
         });
 
-        // ======================== ЗАГРУЗКА ДАННЫХ ========================
+        // ======================== ИНИЦИАЛИЗАЦИЯ ДАННЫХ (ЕСЛИ ПУСТО) ========================
+        function initDataAndLoad() {
+            // Сначала проверим, есть ли категории, если нет – создадим стандартные
+            db.ref('bgCategories').once('value', snap => {
+                if (!snap.val()) {
+                    const defaultCategories = ['bath', 'restaurant', 'cafe', 'shaurma', 'japanese', 'italian', 'russian', 'pub', 'canteen'];
+                    db.ref('bgCategories').set(defaultCategories);
+                }
+            });
+
+            db.ref('validCodes').once('value', snap => {
+                if (!snap.val()) {
+                    const defaultCodes = ['ШЕФ2026', 'LEV777', 'MENU2026', 'CHEF1', 'LEV2026',
+                        'MASTER', 'GRILL', 'STEAK', 'PIZZA', 'PASTA',
+                        'SALAD', 'SOUP', 'FISH', 'MEAT', 'VEGAN',
+                        'BBQ', 'WOK', 'SUSHI', 'BURGER', 'TACO'
+                    ];
+                    db.ref('validCodes').set(defaultCodes);
+                }
+            });
+
+            // Проверим, есть ли bgPresets, если нет – создадим пустой объект
+            db.ref('bgPresets').once('value', snap => {
+                if (!snap.val()) {
+                    db.ref('bgPresets').set({});
+                }
+            });
+
+            // Теперь подписываемся на изменения (они будут автоматически обновлять UI)
+            loadData();
+        }
+
+        // ======================== ЗАГРУЗКА ДАННЫХ С ПОДПИСКОЙ ========================
         function loadData() {
             // Категории
             db.ref('bgCategories').on('value', snap => {
@@ -289,7 +322,7 @@
             const container = document.getElementById('categoryList');
             container.innerHTML = '';
             if (bgCategories.length === 0) {
-                container.innerHTML = '<span style="color:#888;">Нет категорий</span>';
+                container.innerHTML = '<span style="color:#888;">Нет категорий. Добавьте первую!</span>';
                 return;
             }
             bgCategories.forEach(cat => {
@@ -309,12 +342,20 @@
             const select = document.getElementById('categorySelectForBg');
             const currentVal = select.value;
             select.innerHTML = '';
-            bgCategories.forEach(cat => {
+            if (bgCategories.length === 0) {
                 const opt = document.createElement('option');
-                opt.value = cat;
-                opt.textContent = cat;
+                opt.value = '';
+                opt.textContent = 'Нет категорий';
+                opt.disabled = true;
                 select.appendChild(opt);
-            });
+            } else {
+                bgCategories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = cat;
+                    select.appendChild(opt);
+                });
+            }
             if (currentVal && bgCategories.includes(currentVal)) {
                 select.value = currentVal;
             } else if (bgCategories.length > 0) {
@@ -332,6 +373,7 @@
             const newList = [...bgCategories, name];
             db.ref('bgCategories').set(newList).then(() => {
                 input.value = '';
+                // Создаём пустой массив фонов для новой категории
                 bgPresets[name] = [];
                 db.ref('bgPresets').set(bgPresets);
             }).catch(err => alert('Ошибка: ' + err.message));
@@ -378,7 +420,7 @@
         // ======================== ДОБАВЛЕНИЕ / УДАЛЕНИЕ ФОНОВ ========================
         document.getElementById('addBgBtn').addEventListener('click', function() {
             const category = document.getElementById('categorySelectForBg').value;
-            if (!category) { alert('Выберите категорию.'); return; }
+            if (!category) { alert('Нет доступных категорий. Сначала создайте категорию.'); return; }
             const input = document.getElementById('newBgUrlInput');
             const url = input.value.trim();
             if (!url) { alert('Введите URL изображения.'); return; }
