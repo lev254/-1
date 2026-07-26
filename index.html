@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Georgia&family=Times+New+Roman&family=Caveat:wght@400;700&family=Pacifico&family=Comic+Neue:wght@400;700&family=Russo+One&family=Inter:wght@300;400;700&family=Manrope:wght@300;400;700&family=Fira+Sans:wght@300;400;700&family=Cormorant+Garamond:wght@400;600;700&family=Play:wght@400;700&family=Exo+2:wght@300;400;700&family=Cuprum:wght@400;700&family=Philosopher:wght@400;700&family=Alegreya:wght@400;700&family=Bitter:wght@400;700&family=Cabin:wght@400;700&family=DM+Serif+Display:wght@400;700&family=EB+Garamond:wght@400;700&family=Josefin+Sans:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=Oswald:wght@400;700&family=Poppins:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         /* ===== Базовые стили (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -599,18 +602,9 @@
             <details open>
                 <summary>📁 Фон</summary>
                 <div class="content">
-                    <!-- НОВОЕ: категории и фоны -->
                     <label>Категория фона</label>
                     <select id="bgCategorySelect">
-                        <option value="bath">Баня</option>
-                        <option value="restaurant">Ресторан</option>
-                        <option value="cafe">Кафе</option>
-                        <option value="shaurma">Шаурмичная</option>
-                        <option value="japanese">Японская кухня</option>
-                        <option value="italian">Итальянская кухня</option>
-                        <option value="russian">Русская кухня</option>
-                        <option value="pub">Паб</option>
-                        <option value="canteen">Столовая</option>
+                        <!-- заполняется из Firebase -->
                     </select>
 
                     <label>Готовые фоны</label>
@@ -932,6 +926,244 @@
     </div>
 
     <script>
+        // ======================== КОНФИГ FIREBASE (ВАШ) ========================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjAz_C2j5uT-oDYgSmgt1uu45wklnp7V8",
+            authDomain: "menu-3ac7e.firebaseapp.com",
+            databaseURL: "https://menu-3ac7e-default-rtdb.firebaseio.com",
+            projectId: "menu-3ac7e",
+            storageBucket: "menu-3ac7e.firebasestorage.app",
+            messagingSenderId: "1045961578696",
+            appId: "1:1045961578696:web:4a2eed582dcbc377396dfd"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Глобальные переменные для данных из Firebase
+        let bgCategories = [];
+        let bgPresets = {};
+        let validCodes = [];
+
+        // ======================== ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ========================
+        function loadDataFromFirebase() {
+            // Загрузка категорий
+            const catRef = db.ref('bgCategories');
+            catRef.on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val && Array.isArray(val)) {
+                    bgCategories = val;
+                } else {
+                    // Если данных нет, создаём начальные категории
+                    bgCategories = ['bath', 'restaurant', 'cafe', 'shaurma', 'japanese', 'italian', 'russian', 'pub', 'canteen'];
+                    catRef.set(bgCategories);
+                }
+                updateCategorySelect();
+                const currentCategory = document.getElementById('bgCategorySelect').value || bgCategories[0] || 'bath';
+                updatePresetList(currentCategory);
+            });
+
+            // Загрузка пресетов фонов
+            const presetsRef = db.ref('bgPresets');
+            presetsRef.on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val && typeof val === 'object') {
+                    bgPresets = val;
+                } else {
+                    bgPresets = {};
+                    bgCategories.forEach(cat => {
+                        bgPresets[cat] = [];
+                    });
+                    presetsRef.set(bgPresets);
+                }
+                const currentCategory = document.getElementById('bgCategorySelect').value || bgCategories[0] || 'bath';
+                updatePresetList(currentCategory);
+            });
+
+            // Загрузка кодов активации
+            const codesRef = db.ref('validCodes');
+            codesRef.on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val && Array.isArray(val)) {
+                    validCodes = val;
+                } else {
+                    validCodes = ['ШЕФ2026', 'LEV777', 'MENU2026', 'CHEF1', 'LEV2026',
+                        'MASTER', 'GRILL', 'STEAK', 'PIZZA', 'PASTA',
+                        'SALAD', 'SOUP', 'FISH', 'MEAT', 'VEGAN',
+                        'BBQ', 'WOK', 'SUSHI', 'BURGER', 'TACO'
+                    ];
+                    codesRef.set(validCodes);
+                }
+            });
+        }
+
+        // ======================== ОБНОВЛЕНИЕ ВЫПАДАЮЩИХ СПИСКОВ ========================
+        function updateCategorySelect() {
+            const select = document.getElementById('bgCategorySelect');
+            select.innerHTML = '';
+            bgCategories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+                select.appendChild(opt);
+            });
+            const savedCategory = localStorage.getItem('lastBgCategory');
+            if (savedCategory && bgCategories.includes(savedCategory)) {
+                select.value = savedCategory;
+            } else if (bgCategories.length > 0) {
+                select.value = bgCategories[0];
+            }
+        }
+
+        function updatePresetList(categoryKey) {
+            const select = document.getElementById('bgPresetSelect');
+            select.innerHTML = '<option value="">-- Выберите фон --</option>';
+            if (!categoryKey || !bgPresets[categoryKey] || bgPresets[categoryKey].length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '📭 Нет фонов для этой категории';
+                opt.disabled = true;
+                select.appendChild(opt);
+            } else {
+                const urls = bgPresets[categoryKey];
+                urls.forEach((url, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = url;
+                    opt.textContent = 'Фон ' + (index + 1);
+                    select.appendChild(opt);
+                });
+            }
+            syncPresetSelect();
+        }
+
+        // ======================== СИНХРОНИЗАЦИЯ ВЫБОРА ФОНА ========================
+        function syncPresetSelect() {
+            const currentBg = bgImage.style.backgroundImage;
+            const select = document.getElementById('bgPresetSelect');
+            let found = false;
+            if (currentBg) {
+                const urlMatch = currentBg.match(/url\(["']?(.*?)["']?\)/);
+                if (urlMatch && urlMatch[1]) {
+                    const url = urlMatch[1];
+                    for (const option of select.options) {
+                        if (option.value === url) {
+                            select.value = url;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                select.value = '';
+            }
+        }
+
+        // ======================== УСТАНОВКА ФОНА ========================
+        let currentBgUrl = null;
+
+        function setBackground(url) {
+            if (!url) {
+                bgImage.style.backgroundImage = '';
+                currentBgUrl = null;
+                syncPresetSelect();
+                return;
+            }
+            if (currentBgUrl === url) return;
+            bgImage.style.backgroundImage = 'url(' + url + ')';
+            currentBgUrl = url;
+            syncPresetSelect();
+            const img = new Image();
+            img.src = url;
+        }
+
+        // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
+        document.getElementById('bgCategorySelect').addEventListener('change', function() {
+            const cat = this.value;
+            localStorage.setItem('lastBgCategory', cat);
+            updatePresetList(cat);
+        });
+
+        document.getElementById('bgPresetSelect').addEventListener('change', function() {
+            const url = this.value;
+            if (url) {
+                setBackground(url);
+            } else {
+                setBackground(null);
+            }
+        });
+
+        // ======================== СИСТЕМА АКТИВАЦИИ (используем validCodes) ========================
+        const FREE_LIMIT = 3;
+        const ACTIVATION_KEY = 'menu_activated';
+
+        function isActivated() {
+            return localStorage.getItem(ACTIVATION_KEY) === 'true';
+        }
+
+        function activate(code) {
+            if (validCodes.includes(code.trim())) {
+                localStorage.setItem(ACTIVATION_KEY, 'true');
+                return true;
+            }
+            return false;
+        }
+
+        function canAddBlock() {
+            if (isActivated()) return true;
+            return blocks.length < FREE_LIMIT;
+        }
+
+        function showActivationModal() {
+            document.getElementById('activationModal').classList.add('active');
+        }
+
+        function hideActivationModal() {
+            document.getElementById('activationModal').classList.remove('active');
+        }
+
+        function handleActivation() {
+            const code = document.getElementById('activationCodeInput').value.trim();
+            if (!code) {
+                alert('Введите код активации.');
+                return;
+            }
+            if (activate(code)) {
+                alert('✅ Активация успешна! Теперь вы можете добавлять неограниченное количество блоков.');
+                hideActivationModal();
+                updateActivationUI();
+                renderBlocks();
+            } else {
+                alert('❌ Неверный код. Попробуйте ещё раз или свяжитесь с владельцем.');
+            }
+        }
+
+        function updateActivationUI() {
+            const btn = document.getElementById('activateNowBtn');
+            if (isActivated()) {
+                btn.textContent = '✅ Активировано';
+                btn.style.background = '#2e7d32';
+            } else {
+                btn.textContent = '🔑 Активировать полную версию';
+                btn.style.background = '#f5a623';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('activateNowBtn').addEventListener('click', showActivationModal);
+            document.getElementById('activateBtn').addEventListener('click', handleActivation);
+            document.getElementById('activationCodeInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') handleActivation();
+            });
+            document.getElementById('activationModalClose').addEventListener('click', hideActivationModal);
+            document.getElementById('activationModal').addEventListener('click', function(e) {
+                if (e.target === this) hideActivationModal();
+            });
+        });
+
+        loadDataFromFirebase();
+
+        // ======================== ОСНОВНОЙ КОД КОНСТРУКТОРА (без изменений) ========================
         (function() {
             "use strict";
 
@@ -1009,321 +1241,6 @@
             const helpModalClose = document.getElementById('helpModalClose');
             const alignCenterBtn = document.getElementById('alignCenterBtn');
             const toggleGridBtn = document.getElementById('toggleGridBtn');
-
-            // ======================== БАЗА ДАННЫХ ФОНОВ ПО КАТЕГОРИЯМ ========================
-            const BG_DATA = {
-                bath: {
-                    label: 'Баня',
-                    presets: {
-                        'b1': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/91d9b63c-c369-4155-997f-c8eff0bce9d3.jpg',
-                        'b2': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/f95d9603-7c27-40e5-a6e4-f6ea691566b1.jpg',
-                        'b3': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/009d6962-ca62-4160-a74a-c1094d33760a.jpg',
-                        'b4': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/b18d89f2-9fcb-42a0-87b7-e7af154f54a8.jpg',
-                        'b5': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/19ae0d43-0cd9-4c2b-8a91-5192def545da.jpg',
-                        'b6': 'https://i.supaimg.com/cd56b1ab-75bd-442d-ab5c-c9b54a585d5d/1d8b7733-7308-4c05-acca-c2e5e000b71e.jpg'
-                    }
-                },
-                restaurant: { label: 'Ресторан', presets: {} },
-                cafe: { label: 'Кафе', presets: {} },
-                shaurma: { label: 'Шаурмичная', presets: {} },
-                japanese: { label: 'Японская кухня', presets: {} },
-                italian: { label: 'Итальянская кухня', presets: {} },
-                russian: { label: 'Русская кухня', presets: {} },
-                pub: { label: 'Паб', presets: {} },
-                canteen: { label: 'Столовая', presets: {} }
-            };
-
-            // ======================== ФУНКЦИЯ ОБНОВЛЕНИЯ СПИСКА ФОНОВ ========================
-            function updatePresetList(categoryKey) {
-                const category = BG_DATA[categoryKey];
-                if (!category) return;
-                const presets = category.presets;
-                bgPresetSelect.innerHTML = '<option value="">-- Выберите фон --</option>';
-                if (Object.keys(presets).length === 0) {
-                    const opt = document.createElement('option');
-                    opt.value = '';
-                    opt.textContent = '📭 Нет фонов для этой категории';
-                    opt.disabled = true;
-                    bgPresetSelect.appendChild(opt);
-                } else {
-                    for (const [key, url] of Object.entries(presets)) {
-                        const opt = document.createElement('option');
-                        opt.value = url;
-                        opt.textContent = 'Фон ' + key;
-                        bgPresetSelect.appendChild(opt);
-                    }
-                }
-                // Сбросить текущий выбор, если он не соответствует новой категории
-                bgPresetSelect.value = '';
-            }
-
-            // ======================== УСТАНОВКА ФОНА (ИСПРАВЛЕННАЯ) ========================
-            let currentBgUrl = null;
-
-            function setBackground(url) {
-                if (!url) {
-                    bgImage.style.backgroundImage = '';
-                    currentBgUrl = null;
-                    syncPresetSelect();
-                    return;
-                }
-                // Если такой же URL уже установлен, не перезагружаем
-                if (currentBgUrl === url) return;
-
-                // Сразу устанавливаем фон (без ожидания загрузки) – для быстрого отклика
-                bgImage.style.backgroundImage = 'url(' + url + ')';
-                // Сохраняем текущий URL, чтобы не перезагружать
-                currentBgUrl = url;
-                syncPresetSelect();
-
-                // Параллельно пробуем предзагрузить изображение, чтобы убедиться, что оно доступно
-                // Если загрузка не удастся, фон уже будет отображаться (пусть даже с ошибкой),
-                // но мы не будем показывать alert.
-                const img = new Image();
-                let timeoutId = setTimeout(() => {
-                    // Если загрузка зависла, просто ничего не делаем
-                    console.warn('Предзагрузка фона зависла:', url);
-                }, 10000); // 10 секунд таймаут
-
-                img.onload = function() {
-                    clearTimeout(timeoutId);
-                    console.log('Фон успешно загружен:', url);
-                    // Можно дополнительно обновить фон, если нужно
-                };
-                img.onerror = function() {
-                    clearTimeout(timeoutId);
-                    console.warn('Не удалось загрузить фон (но он уже установлен):', url);
-                    // Не показываем alert, чтобы не раздражать пользователя
-                };
-                img.src = url;
-            }
-
-            // Синхронизация выпадающего списка с текущим фоном
-            function syncPresetSelect() {
-                const currentBg = bgImage.style.backgroundImage;
-                let found = false;
-                if (currentBg) {
-                    const urlMatch = currentBg.match(/url\(["']?(.*?)["']?\)/);
-                    if (urlMatch && urlMatch[1]) {
-                        const url = urlMatch[1];
-                        for (const option of bgPresetSelect.options) {
-                            if (option.value === url) {
-                                bgPresetSelect.value = url;
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            bgPresetSelect.value = '';
-                        }
-                    }
-                }
-                if (!found) {
-                    bgPresetSelect.value = '';
-                }
-            }
-
-            // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
-            bgCategorySelect.addEventListener('change', function() {
-                updatePresetList(this.value);
-            });
-
-            bgPresetSelect.addEventListener('change', function() {
-                const url = this.value;
-                if (url) {
-                    setBackground(url);
-                } else {
-                    setBackground(null);
-                }
-            });
-
-            // Инициализация: загружаем фоны для текущей категории (по умолчанию 'bath')
-            updatePresetList('bath');
-
-            // ======================== СИСТЕМА АКТИВАЦИИ ========================
-            const FREE_LIMIT = 3;
-            const ACTIVATION_KEY = 'menu_activated';
-            const VALID_CODES = [
-                'ШЕФ2026', 'LEV777', 'MENU2026', 'CHEF1', 'LEV2026',
-                'MASTER', 'GRILL', 'STEAK', 'PIZZA', 'PASTA',
-                'SALAD', 'SOUP', 'FISH', 'MEAT', 'VEGAN',
-                'BBQ', 'WOK', 'SUSHI', 'BURGER', 'TACO'
-            ];
-
-            function isActivated() {
-                return localStorage.getItem(ACTIVATION_KEY) === 'true';
-            }
-
-            function activate(code) {
-                if (VALID_CODES.includes(code.trim())) {
-                    localStorage.setItem(ACTIVATION_KEY, 'true');
-                    return true;
-                }
-                return false;
-            }
-
-            function canAddBlock() {
-                if (isActivated()) return true;
-                return blocks.length < FREE_LIMIT;
-            }
-
-            function showActivationModal() {
-                activationModal.classList.add('active');
-            }
-
-            function hideActivationModal() {
-                activationModal.classList.remove('active');
-            }
-
-            function handleActivation() {
-                const code = activationCodeInput.value.trim();
-                if (!code) {
-                    alert('Введите код активации.');
-                    return;
-                }
-                if (activate(code)) {
-                    alert('✅ Активация успешна! Теперь вы можете добавлять неограниченное количество блоков.');
-                    hideActivationModal();
-                    updateActivationUI();
-                    renderBlocks();
-                } else {
-                    alert('❌ Неверный код. Попробуйте ещё раз или свяжитесь с владельцем.');
-                }
-            }
-
-            function updateActivationUI() {
-                if (isActivated()) {
-                    activateNowBtn.textContent = '✅ Активировано';
-                    activateNowBtn.style.background = '#2e7d32';
-                } else {
-                    activateNowBtn.textContent = '🔑 Активировать полную версию';
-                    activateNowBtn.style.background = '#f5a623';
-                }
-            }
-
-            activateNowBtn.addEventListener('click', showActivationModal);
-            activateBtn.addEventListener('click', handleActivation);
-            activationCodeInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') handleActivation();
-            });
-            activationModalClose.addEventListener('click', hideActivationModal);
-            activationModal.addEventListener('click', function(e) {
-                if (e.target === activationModal) hideActivationModal();
-            });
-
-            // ======================== ИСТОРИЯ ПРОЕКТОВ ========================
-            const HISTORY_KEY = 'menu_project_history';
-            const MAX_HISTORY = 10;
-
-            function getHistory() {
-                const data = localStorage.getItem(HISTORY_KEY);
-                return data ? JSON.parse(data) : [];
-            }
-
-            function saveHistory(history) {
-                localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-                renderHistory();
-            }
-
-            function addToHistory(name, projectData) {
-                let history = getHistory();
-                const entry = {
-                    name: name || `Проект ${new Date().toLocaleString()}`,
-                    date: new Date().toISOString(),
-                    data: projectData
-                };
-                history.unshift(entry);
-                if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
-                saveHistory(history);
-            }
-
-            function loadProjectFromData(data) {
-                try {
-                    if (data.blocks && Array.isArray(data.blocks)) {
-                        blocks = data.blocks;
-                        let maxId = 0;
-                        blocks.forEach(b => { if (b.id > maxId) maxId = b.id; });
-                        blockIdCounter = maxId;
-                        if (data.bgImage) {
-                            const match = data.bgImage.match(/url\(["']?(.*?)["']?\)/);
-                            if (match && match[1]) {
-                                setBackground(match[1]);
-                            } else {
-                                setBackground(null);
-                            }
-                        } else {
-                            setBackground(null);
-                        }
-                        selectedIds = [];
-                        renderBlocks();
-                        if (blocks.length > 0) {
-                            syncEditFields();
-                        }
-                        alert('Проект загружен успешно!');
-                    } else {
-                        alert('Неверный формат данных.');
-                    }
-                } catch (err) {
-                    alert('Ошибка загрузки: ' + err.message);
-                }
-            }
-
-            function renderHistory() {
-                const history = getHistory();
-                historyList.innerHTML = '';
-                if (history.length === 0) {
-                    historyList.innerHTML = '<div style="color:#888; padding:8px; text-align:center;">Нет сохранённых проектов</div>';
-                    return;
-                }
-                history.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'history-item';
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'hname';
-                    nameSpan.textContent = item.name;
-                    const dateSpan = document.createElement('span');
-                    dateSpan.className = 'hdate';
-                    dateSpan.textContent = new Date(item.date).toLocaleString();
-                    const delBtn = document.createElement('button');
-                    delBtn.className = 'hdel';
-                    delBtn.textContent = '×';
-                    delBtn.title = 'Удалить из истории';
-                    delBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        let hist = getHistory();
-                        hist.splice(index, 1);
-                        saveHistory(hist);
-                    });
-                    div.appendChild(nameSpan);
-                    div.appendChild(dateSpan);
-                    div.appendChild(delBtn);
-                    div.addEventListener('click', function() {
-                        if (confirm(`Загрузить проект "${item.name}"?`)) {
-                            loadProjectFromData(item.data);
-                        }
-                    });
-                    historyList.appendChild(div);
-                });
-            }
-
-            clearHistoryBtn.addEventListener('click', function() {
-                if (confirm('Очистить всю историю проектов?')) {
-                    localStorage.removeItem(HISTORY_KEY);
-                    renderHistory();
-                }
-            });
-
-            // ======================== ИНСТРУКЦИЯ ========================
-            helpBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                helpModal.classList.add('active');
-            });
-            helpModalClose.addEventListener('click', function() {
-                helpModal.classList.remove('active');
-            });
-            helpModal.addEventListener('click', function(e) {
-                if (e.target === helpModal) helpModal.classList.remove('active');
-            });
 
             // ======================== ОСНОВНЫЕ ДАННЫЕ ========================
             let blocks = [];
@@ -2747,7 +2664,7 @@
             });
 
             // ======================== ИНИЦИАЛИЗАЦИЯ ========================
-            window.addEventListener('load', function() {
+            function initApp() {
                 updateCanvasSize();
                 restoreLastProject();
                 renderHistory();
@@ -2767,8 +2684,9 @@
                     updateCanvasSize();
                     recalcPositionsForNewFormat();
                 });
-            });
+            }
 
+            setTimeout(initApp, 500);
         })();
     </script>
 </body>
