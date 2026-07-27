@@ -95,7 +95,6 @@
         .header-right a:hover { transform: scale(1.1); background: rgba(245, 227, 122, 0.1); border-color: #f5e37a; }
         .header-right a.telegram { background: #0088cc; border-color: #0088cc; }
         .header-right a.telegram:hover { background: #00a3e0; border-color: #00a3e0; }
-        /* Стиль для ссылки Turbotext */
         .header-right a.turbotext {
             background: #1a1a2e;
             border-color: #f5e37a;
@@ -348,8 +347,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             z-index: 20;
         }
-        /* Изменения для метки: теперь по умолчанию растягивается (display:block), 
-           но при режиме 'fixed' будет inline-block (переопределяется в JS) */
         .text-block .badge-wrapper {
             display: block;
             width: 100%;
@@ -454,14 +451,14 @@
         .text-block.border-shadow { box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-style: none; }
         .text-block.border-glow { box-shadow: 0 0 20px rgba(245, 227, 122, 0.6); border-style: none; }
 
-        /* ----- НОВОЕ: стиль для размытия фона ----- */
+        /* ----- НОВОЕ: стиль для размытия фона (исправлено для экспорта) ----- */
         .text-block .blur-background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;  /* был -1, теперь 0 для захвата html2canvas */
             pointer-events: none;
             border-radius: inherit;
         }
@@ -603,7 +600,6 @@
         </div>
         <div class="header-right">
             <a href="https://t.me/MenuEngineer" target="_blank" class="telegram" title="Telegram канал" aria-label="Telegram">✈️</a>
-            <!-- Новая ссылка на Turbotext -->
             <a href="https://www.turbotext.ru/1929285/" target="_blank" class="turbotext" title="Партнёрский сервис Turbotext">
                 ✍️ Turbotext
             </a>
@@ -1335,7 +1331,12 @@
                         } else {
                             setBackground(null);
                         }
-                        selectedIds = [];
+                        // Автоматически выделяем первый блок, если есть
+                        if (blocks.length > 0) {
+                            selectedIds = [blocks[0].id];
+                        } else {
+                            selectedIds = [];
+                        }
                         renderBlocks();
                         if (blocks.length > 0) {
                             syncEditFields();
@@ -1548,13 +1549,14 @@
                     const bgOp = block.bgOpacity ?? 0.35;
                     const blur = block.blurRadius || 0;
                     if (blur > 0) {
+                        // Создаём слой фона с размытием
+                        div.style.background = 'none';
                         const bgLayer = document.createElement('div');
                         bgLayer.className = 'blur-background';
                         bgLayer.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
                         bgLayer.style.filter = `blur(${blur}px)`;
                         bgLayer.style.borderRadius = 'inherit';
                         div.appendChild(bgLayer);
-                        div.style.background = 'none';
                     } else {
                         div.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
                     }
@@ -1622,7 +1624,6 @@
                         nameSpan.textContent = block.name;
                         contentWrapper.appendChild(nameSpan);
                     } else if (block.type === 'dish') {
-                        // Метка – теперь управляется через badgeMode
                         if (block.badge) {
                             const badgeSpan = document.createElement('span');
                             badgeSpan.className = 'badge-wrapper';
@@ -1631,7 +1632,7 @@
                             badgeSpan.style.fontSize = (block.fontSizeDesc || 14) + 'px';
                             badgeSpan.textContent = block.badge;
                             // Применяем режим метки
-                            const mode = block.badgeMode || 'stretch'; // по умолчанию растягиваемая
+                            const mode = block.badgeMode || 'stretch';
                             if (mode === 'stretch') {
                                 badgeSpan.style.display = 'block';
                                 badgeSpan.style.width = '100%';
