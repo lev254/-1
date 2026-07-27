@@ -330,26 +330,17 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             z-index: 20;
         }
-        .text-block.badge-type { border-radius: 30px; padding: 4px 14px; }
-        .text-block.badge-type .badge-text {
-            font-size: 0.8rem;
-            font-weight: 700;
-            background: #f5e37a;
-            color: #1a1a1a;
+        /* Изменения для метки: она не растягивается */
+        .text-block .badge-wrapper {
+            display: inline-block;
             padding: 2px 12px;
             border-radius: 20px;
-            display: inline-block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            background: #f5e37a;
+            color: #1a1a1a;
             text-shadow: none;
-        }
-        .text-block:hover { border-color: rgba(245, 227, 122, 0.4); }
-        .text-block.selected {
-            border-color: #f5e37a;
-            box-shadow: 0 0 20px rgba(245, 227, 122, 0.2);
-            animation: selected-pulse 1.5s ease-in-out infinite alternate;
-        }
-        @keyframes selected-pulse {
-            0% { box-shadow: 0 0 10px rgba(245, 227, 122, 0.2); }
-            100% { box-shadow: 0 0 30px rgba(245, 227, 122, 0.6); }
         }
         .text-block .line { display: block; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9); margin-bottom: 2px; }
         .text-block .line.name { font-weight: 700; }
@@ -599,7 +590,6 @@
             <details open>
                 <summary>📁 Фон</summary>
                 <div class="content">
-                    <!-- НОВОЕ: категории и фоны -->
                     <label>Категория фона</label>
                     <select id="bgCategorySelect">
                         <option value="bath">Баня</option>
@@ -682,6 +672,17 @@
                         <option value="burgundy">🍷 Бургундский (винный)</option>
                         <option value="gold">✨ Золотой (роскошь)</option>
                         <option value="floral">🌸 Цветочный (пастельные)</option>
+                        <!-- НОВЫЕ шаблоны -->
+                        <option value="retro">📼 Ретро (винтажные цвета)</option>
+                        <option value="marine">⚓ Морской (сине-белый)</option>
+                        <option value="autumn">🍂 Осенний (тёплые лиственные)</option>
+                        <option value="night">🌙 Ночной (тёмно-синий с серебром)</option>
+                        <option value="space">🚀 Космический (чёрный с фиолетовым)</option>
+                        <option value="country">🏡 Деревенский (лен, дерево)</option>
+                        <option value="provence">🌿 Прованс (лаванда, бежевый)</option>
+                        <option value="hitech">💻 Хай-тек (яркие неоновые)</option>
+                        <option value="eco">🌱 Эко (зелёный, земляной)</option>
+                        <option value="artdeco">🎭 Арт-деко (золото, чёрный, геометрия)</option>
                     </select>
                     <button class="btn btn-template" id="applyTemplateBtn" style="width:100%; margin-top:8px;">Применить шаблон</button>
                 </div>
@@ -734,31 +735,46 @@
                             <option value="'Russo One', sans-serif">Russo One</option>
                         </optgroup>
                     </select>
-                    <label>Размер названия</label>
-                    <input type="number" id="fontSizeName" value="24" min="10" max="70" />
-                    <label>Размер описания, веса</label>
-                    <input type="number" id="fontSizeOther" value="16" min="8" max="50" />
-                    <label>Размер цены</label>
+
+                    <!-- Отдельные настройки для каждой части -->
+                    <label>Название – размер</label>
+                    <input type="number" id="fontSizeName" value="24" min="8" max="70" />
+                    <label>Название – цвет</label>
+                    <input type="color" id="colorName" value="#ffffff" />
+
+                    <label>Описание и вес – размер</label>
+                    <input type="number" id="fontSizeDesc" value="16" min="8" max="50" />
+                    <label>Описание и вес – цвет</label>
+                    <input type="color" id="colorDesc" value="#dddddd" />
+
+                    <label>Цена – размер</label>
                     <input type="number" id="fontSizePrice" value="18" min="8" max="50" />
-                    <label>Цвет текста</label>
-                    <input type="color" id="textColor" value="#ffffff" />
+                    <label>Цена – цвет</label>
+                    <input type="color" id="colorPrice" value="#f5e37a" />
+
+                    <label>Фон метки – цвет</label>
+                    <input type="color" id="badgeBgColor" value="#f5e37a" />
+
                     <label>Тень текста (пиксели)</label>
                     <input type="number" id="shadowBlur" value="8" min="0" max="30" />
+
                     <label>Прозрачность блока (всего)</label>
                     <input type="range" id="opacityBlock" min="0" max="1" step="0.05" value="1" />
                     <span id="opacityBlockValue">1.00</span>
+
                     <label>Цвет фона блока</label>
                     <input type="color" id="bgColorBlock" value="#000000" />
                     <label>Прозрачность фона блока</label>
                     <input type="range" id="bgOpacityBlock" min="0" max="1" step="0.05" value="0.35" />
                     <span id="bgOpacityBlockValue">0.35</span>
+
                     <label>Яркость блока (затемнение)</label>
                     <input type="range" id="brightnessBlock" min="0.3" max="1.5" step="0.05" value="1" />
                     <span id="brightnessBlockValue">1.00</span>
+
                     <label>Отступы внутри блока (px, общие)</label>
                     <input type="number" id="paddingBlock" value="8" min="0" max="50" />
 
-                    <!-- Размытие краёв -->
                     <label>Размытие краёв (px)</label>
                     <input type="range" id="blurRadius" min="0" max="20" step="1" value="0" />
                     <span id="blurRadiusValue">0</span>
@@ -949,10 +965,14 @@
             const selectAllBtn = document.getElementById('selectAllBtn');
             const deselectAllBtn = document.getElementById('deselectAllBtn');
             const fontFamily = document.getElementById('fontFamily');
+            // новые поля
             const fontSizeName = document.getElementById('fontSizeName');
-            const fontSizeOther = document.getElementById('fontSizeOther');
+            const colorName = document.getElementById('colorName');
+            const fontSizeDesc = document.getElementById('fontSizeDesc');
+            const colorDesc = document.getElementById('colorDesc');
             const fontSizePrice = document.getElementById('fontSizePrice');
-            const textColor = document.getElementById('textColor');
+            const colorPrice = document.getElementById('colorPrice');
+            const badgeBgColor = document.getElementById('badgeBgColor');
             const shadowBlur = document.getElementById('shadowBlur');
             const opacityBlock = document.getElementById('opacityBlock');
             const opacityBlockValue = document.getElementById('opacityBlockValue');
@@ -1010,7 +1030,7 @@
             const alignCenterBtn = document.getElementById('alignCenterBtn');
             const toggleGridBtn = document.getElementById('toggleGridBtn');
 
-            // ======================== БАЗА ДАННЫХ ФОНОВ ПО КАТЕГОРИЯМ ========================
+            // ======================== БАЗА ДАННЫХ ФОНОВ ========================
             const BG_DATA = {
                 bath: {
                     label: 'Баня',
@@ -1033,7 +1053,6 @@
                 canteen: { label: 'Столовая', presets: {} }
             };
 
-            // ======================== ФУНКЦИЯ ОБНОВЛЕНИЯ СПИСКА ФОНОВ ========================
             function updatePresetList(categoryKey) {
                 const category = BG_DATA[categoryKey];
                 if (!category) return;
@@ -1053,11 +1072,9 @@
                         bgPresetSelect.appendChild(opt);
                     }
                 }
-                // Сбросить текущий выбор, если он не соответствует новой категории
                 bgPresetSelect.value = '';
             }
 
-            // ======================== УСТАНОВКА ФОНА ========================
             let currentBgUrl = null;
 
             function setBackground(url) {
@@ -1071,7 +1088,6 @@
                 bgImage.style.backgroundImage = 'url(' + url + ')';
                 currentBgUrl = url;
                 syncPresetSelect();
-                // Предзагрузка для кеша (без alert)
                 const img = new Image();
                 img.onload = function() { console.log('Фон загружен:', url); };
                 img.onerror = function() { console.warn('Фон не загрузился:', url); };
@@ -1102,7 +1118,6 @@
                 }
             }
 
-            // ======================== ОБРАБОТЧИКИ ДЛЯ КАТЕГОРИЙ И ФОНОВ ========================
             bgCategorySelect.addEventListener('change', function() {
                 updatePresetList(this.value);
             });
@@ -1116,7 +1131,6 @@
                 }
             });
 
-            // Инициализация: загружаем фоны для текущей категории (по умолчанию 'bath')
             updatePresetList('bath');
 
             // ======================== СИСТЕМА АКТИВАЦИИ ========================
@@ -1356,7 +1370,6 @@
                 canvas._height = height;
             }
 
-            // ======================== ПЕРЕСЧЁТ КООРДИНАТ ПРИ СМЕНЕ ФОРМАТА ========================
             function recalcPositionsForNewFormat() {
                 if (blocks.length === 0) return;
                 const oldW = canvas._width || parseFloat(canvas.style.width) || 400;
@@ -1396,10 +1409,14 @@
                     badge,
                     shape,
                     fontFamily: fontFamily.value,
+                    // отдельные размеры и цвета
                     fontSizeName: parseInt(fontSizeName.value) || 24,
-                    fontSizeOther: parseInt(fontSizeOther.value) || 16,
+                    colorName: colorName.value || '#ffffff',
+                    fontSizeDesc: parseInt(fontSizeDesc.value) || 16,
+                    colorDesc: colorDesc.value || '#dddddd',
                     fontSizePrice: parseInt(fontSizePrice.value) || 18,
-                    color: textColor.value,
+                    colorPrice: colorPrice.value || '#f5e37a',
+                    badgeBgColor: badgeBgColor.value || '#f5e37a',
                     shadow: parseInt(shadowBlur.value) || 8,
                     opacity: parseFloat(opacityBlock.value) || 1,
                     bgColor: bgColorBlock.value,
@@ -1425,7 +1442,7 @@
                 blocks.forEach((block) => {
                     const div = document.createElement('div');
                     div.className = 'text-block shape-' + block.shape;
-                    if (block.badge) div.classList.add('badge-type');
+                    // Метка теперь отдельно, не влияет на класс
                     const isSelected = selectedIds.includes(block.id);
                     if (isSelected) div.classList.add('selected');
                     div.dataset.id = block.id;
@@ -1436,7 +1453,7 @@
                     if (block.height) div.style.height = block.height + 'px';
 
                     div.style.fontFamily = block.fontFamily || 'Georgia, serif';
-                    div.style.color = block.color || '#ffffff';
+                    // Цвет текста больше не задаётся общий, теперь каждый элемент свой
                     div.style.textShadow = `0 2px ${block.shadow || 8}px rgba(0,0,0,0.9)`;
                     div.style.opacity = block.opacity ?? 1;
                     const bgColor = block.bgColor || '#000000';
@@ -1513,21 +1530,26 @@
                         const nameSpan = document.createElement('span');
                         nameSpan.className = 'line name';
                         nameSpan.style.fontSize = (block.fontSizeName || 40) + 'px';
+                        nameSpan.style.color = block.colorName || '#ffffff';
                         nameSpan.textContent = block.name;
                         contentWrapper.appendChild(nameSpan);
                     } else if (block.type === 'dish') {
+                        // Метка – отдельный inline-элемент, не растягивается
                         if (block.badge) {
                             const badgeSpan = document.createElement('span');
-                            badgeSpan.className = 'badge-text';
-                            badgeSpan.style.fontSize = (block.fontSizeOther || 14) + 'px';
+                            badgeSpan.className = 'badge-wrapper';
+                            badgeSpan.style.background = block.badgeBgColor || '#f5e37a';
+                            // цвет текста метки – контрастный (белый или чёрный)
+                            badgeSpan.style.color = '#1a1a1a';
+                            badgeSpan.style.fontSize = (block.fontSizeDesc || 14) + 'px';
                             badgeSpan.textContent = block.badge;
                             contentWrapper.appendChild(badgeSpan);
-                            const br = document.createElement('br');
-                            contentWrapper.appendChild(br);
+                            // после метки перенос строки не нужен – она сама inline
                         }
                         const nameSpan = document.createElement('span');
                         nameSpan.className = 'line name';
                         nameSpan.style.fontSize = (block.fontSizeName || 24) + 'px';
+                        nameSpan.style.color = block.colorName || '#ffffff';
                         nameSpan.textContent = block.name;
                         contentWrapper.appendChild(nameSpan);
 
@@ -1540,7 +1562,8 @@
                                 } else {
                                     const descSpan = document.createElement('span');
                                     descSpan.className = 'line description';
-                                    descSpan.style.fontSize = (block.fontSizeOther || 16) + 'px';
+                                    descSpan.style.fontSize = (block.fontSizeDesc || 16) + 'px';
+                                    descSpan.style.color = block.colorDesc || '#dddddd';
                                     descSpan.textContent = line;
                                     contentWrapper.appendChild(descSpan);
                                 }
@@ -1549,13 +1572,15 @@
 
                         const weightSpan = document.createElement('span');
                         weightSpan.className = 'line weight';
-                        weightSpan.style.fontSize = (block.fontSizeOther || 16) + 'px';
+                        weightSpan.style.fontSize = (block.fontSizeDesc || 16) + 'px';
+                        weightSpan.style.color = block.colorDesc || '#dddddd';
                         weightSpan.textContent = block.weight;
                         contentWrapper.appendChild(weightSpan);
 
                         const priceSpan = document.createElement('span');
                         priceSpan.className = 'line price';
-                        priceSpan.style.fontSize = (block.fontSizePrice || block.fontSizeOther || 16) + 'px';
+                        priceSpan.style.fontSize = (block.fontSizePrice || block.fontSizeDesc || 16) + 'px';
+                        priceSpan.style.color = block.colorPrice || '#f5e37a';
                         priceSpan.textContent = block.price;
                         contentWrapper.appendChild(priceSpan);
                     } else if (block.type === 'logo') {
@@ -1685,6 +1710,14 @@
                     editImageSize.value = 60;
                     blurRadiusInput.value = 0;
                     blurRadiusValue.textContent = '0';
+                    // Сбросить новые поля
+                    fontSizeName.value = 24;
+                    colorName.value = '#ffffff';
+                    fontSizeDesc.value = 16;
+                    colorDesc.value = '#dddddd';
+                    fontSizePrice.value = 18;
+                    colorPrice.value = '#f5e37a';
+                    badgeBgColor.value = '#f5e37a';
                     return;
                 }
 
@@ -1707,10 +1740,14 @@
                 brightnessBlock.value = firstBlock.brightness ?? 1;
                 brightnessBlockValue.textContent = (firstBlock.brightness ?? 1).toFixed(2);
                 fontFamily.value = firstBlock.fontFamily || 'Georgia, serif';
+                // новые поля
                 fontSizeName.value = firstBlock.fontSizeName || 24;
-                fontSizeOther.value = firstBlock.fontSizeOther || 16;
+                colorName.value = firstBlock.colorName || '#ffffff';
+                fontSizeDesc.value = firstBlock.fontSizeDesc || 16;
+                colorDesc.value = firstBlock.colorDesc || '#dddddd';
                 fontSizePrice.value = firstBlock.fontSizePrice || 18;
-                textColor.value = firstBlock.color || '#ffffff';
+                colorPrice.value = firstBlock.colorPrice || '#f5e37a';
+                badgeBgColor.value = firstBlock.badgeBgColor || '#f5e37a';
                 shadowBlur.value = firstBlock.shadow || 8;
                 paddingBlock.value = parseInt(firstBlock.padding) || 8;
                 borderType.value = firstBlock.borderType || 'none';
@@ -1769,11 +1806,10 @@
                 if (type === 'title') {
                     block = createBlockData('☀️ Заголовок', '', '', '', (w - 200) / 2, 20, 'title', '', 'rectangle');
                     block.fontSizeName = 40;
-                    block.fontSizeOther = 0;
                 } else if (type === 'logo') {
                     block = createBlockData('Логотип', '', '', '', left, top, 'logo', '', 'rectangle');
                     block.fontSizeName = 0;
-                    block.fontSizeOther = 0;
+                    block.fontSizeDesc = 0;
                     block.fontSizePrice = 0;
                     const input = document.createElement('input');
                     input.type = 'file';
@@ -2082,148 +2118,335 @@
             // ======================== ШАБЛОНЫ ========================
             const TEMPLATES = {
                 luxury: {
-                    color: '#ffd700',
+                    colorName: '#ffd700',
+                    colorDesc: '#ddd',
+                    colorPrice: '#ffd700',
+                    badgeBgColor: '#ffd700',
                     bgColor: '#1a1a1a',
                     bgOpacity: 0.7,
                     fontFamily: "'Playfair Display', serif",
                     fontSizeName: 28,
-                    fontSizeOther: 18,
+                    fontSizeDesc: 18,
                     fontSizePrice: 22,
                     shadow: 12,
                     brightness: 1.2,
                     opacity: 1
                 },
                 minimal: {
-                    color: '#333333',
+                    colorName: '#333',
+                    colorDesc: '#555',
+                    colorPrice: '#333',
+                    badgeBgColor: '#e0e0e0',
                     bgColor: '#ffffff',
                     bgOpacity: 0.8,
                     fontFamily: "'Inter', sans-serif",
                     fontSizeName: 22,
-                    fontSizeOther: 14,
+                    fontSizeDesc: 14,
                     fontSizePrice: 18,
                     shadow: 4,
                     brightness: 1,
                     opacity: 1
                 },
                 summer: {
-                    color: '#1a237e',
+                    colorName: '#1a237e',
+                    colorDesc: '#333',
+                    colorPrice: '#1a237e',
+                    badgeBgColor: '#ffb300',
                     bgColor: '#fff8e1',
                     bgOpacity: 0.6,
                     fontFamily: "'Caveat', cursive",
                     fontSizeName: 30,
-                    fontSizeOther: 18,
+                    fontSizeDesc: 18,
                     fontSizePrice: 20,
                     shadow: 6,
                     brightness: 1.1,
                     opacity: 0.95
                 },
                 italian: {
-                    color: '#4e342e',
+                    colorName: '#4e342e',
+                    colorDesc: '#4e342e',
+                    colorPrice: '#b71c1c',
+                    badgeBgColor: '#b71c1c',
                     bgColor: '#ffccbc',
                     bgOpacity: 0.7,
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSizeName: 26,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 18,
                     shadow: 8,
                     brightness: 1,
                     opacity: 0.95
                 },
                 vintage: {
-                    color: '#3e2723',
+                    colorName: '#3e2723',
+                    colorDesc: '#3e2723',
+                    colorPrice: '#6d4c41',
+                    badgeBgColor: '#8d6e63',
                     bgColor: '#d7ccc8',
                     bgOpacity: 0.75,
                     fontFamily: "'Lora', serif",
                     fontSizeName: 24,
-                    fontSizeOther: 15,
+                    fontSizeDesc: 15,
                     fontSizePrice: 16,
                     shadow: 6,
                     brightness: 0.9,
                     opacity: 0.9
                 },
                 fusion: {
-                    color: '#ff4081',
+                    colorName: '#ff4081',
+                    colorDesc: '#e0e0e0',
+                    colorPrice: '#ff4081',
+                    badgeBgColor: '#ff4081',
                     bgColor: '#212121',
                     bgOpacity: 0.5,
                     fontFamily: "'Russo One', sans-serif",
                     fontSizeName: 32,
-                    fontSizeOther: 18,
+                    fontSizeDesc: 18,
                     fontSizePrice: 22,
                     shadow: 10,
                     brightness: 1.3,
                     opacity: 1
                 },
                 classic: {
-                    color: '#f5e37a',
+                    colorName: '#f5e37a',
+                    colorDesc: '#ddd',
+                    colorPrice: '#f5e37a',
+                    badgeBgColor: '#f5e37a',
                     bgColor: '#0d47a1',
                     bgOpacity: 0.6,
                     fontFamily: "'Playfair Display', serif",
                     fontSizeName: 28,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 20,
                     shadow: 10,
                     brightness: 1,
                     opacity: 1
                 },
                 green: {
-                    color: '#1b5e20',
+                    colorName: '#1b5e20',
+                    colorDesc: '#1b5e20',
+                    colorPrice: '#1b5e20',
+                    badgeBgColor: '#81c784',
                     bgColor: '#c8e6c9',
                     bgOpacity: 0.7,
                     fontFamily: "'Nunito', sans-serif",
                     fontSizeName: 26,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 18,
                     shadow: 6,
                     brightness: 1,
                     opacity: 0.95
                 },
                 chocolate: {
-                    color: '#4e2e1e',
+                    colorName: '#4e2e1e',
+                    colorDesc: '#4e2e1e',
+                    colorPrice: '#8d6e63',
+                    badgeBgColor: '#8d6e63',
                     bgColor: '#d7b99a',
                     bgOpacity: 0.7,
                     fontFamily: "'Bitter', serif",
                     fontSizeName: 28,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 18,
                     shadow: 8,
                     brightness: 0.9,
                     opacity: 0.95
                 },
                 burgundy: {
-                    color: '#fff0f0',
+                    colorName: '#fff0f0',
+                    colorDesc: '#e0d0d0',
+                    colorPrice: '#ffb3b3',
+                    badgeBgColor: '#b71c1c',
                     bgColor: '#4a0e2e',
                     bgOpacity: 0.7,
                     fontFamily: "'Playfair Display', serif",
                     fontSizeName: 28,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 20,
                     shadow: 10,
                     brightness: 1,
                     opacity: 0.95
                 },
                 gold: {
-                    color: '#ffd700',
+                    colorName: '#ffd700',
+                    colorDesc: '#ccc',
+                    colorPrice: '#ffd700',
+                    badgeBgColor: '#ffd700',
                     bgColor: '#1a1a1a',
                     bgOpacity: 0.6,
                     fontFamily: "'Raleway', sans-serif",
                     fontSizeName: 30,
-                    fontSizeOther: 18,
+                    fontSizeDesc: 18,
                     fontSizePrice: 22,
                     shadow: 12,
                     brightness: 1.2,
                     opacity: 1
                 },
                 floral: {
-                    color: '#4a2e3a',
+                    colorName: '#4a2e3a',
+                    colorDesc: '#4a2e3a',
+                    colorPrice: '#c2185b',
+                    badgeBgColor: '#c2185b',
                     bgColor: '#fce4ec',
                     bgOpacity: 0.7,
                     fontFamily: "'Quicksand', sans-serif",
                     fontSizeName: 26,
-                    fontSizeOther: 16,
+                    fontSizeDesc: 16,
                     fontSizePrice: 18,
                     shadow: 6,
                     brightness: 1,
                     opacity: 0.9
+                },
+                // НОВЫЕ шаблоны
+                retro: {
+                    colorName: '#f57c00',
+                    colorDesc: '#5d4037',
+                    colorPrice: '#bf360c',
+                    badgeBgColor: '#ffab00',
+                    bgColor: '#fff8e1',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Georgia', serif",
+                    fontSizeName: 26,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 18,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                marine: {
+                    colorName: '#0d47a1',
+                    colorDesc: '#1a237e',
+                    colorPrice: '#0d47a1',
+                    badgeBgColor: '#42a5f5',
+                    bgColor: '#e3f2fd',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontSizeName: 28,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 20,
+                    shadow: 8,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                autumn: {
+                    colorName: '#bf360c',
+                    colorDesc: '#4e342e',
+                    colorPrice: '#bf360c',
+                    badgeBgColor: '#ff8f00',
+                    bgColor: '#fff3e0',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Lora', serif",
+                    fontSizeName: 26,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 18,
+                    shadow: 8,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                night: {
+                    colorName: '#e0e0e0',
+                    colorDesc: '#b0bec5',
+                    colorPrice: '#cfd8dc',
+                    badgeBgColor: '#78909c',
+                    bgColor: '#263238',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Inter', sans-serif",
+                    fontSizeName: 28,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 20,
+                    shadow: 12,
+                    brightness: 1,
+                    opacity: 1
+                },
+                space: {
+                    colorName: '#e040fb',
+                    colorDesc: '#b39ddb',
+                    colorPrice: '#e040fb',
+                    badgeBgColor: '#7c4dff',
+                    bgColor: '#1a1a2e',
+                    bgOpacity: 0.8,
+                    fontFamily: "'Russo One', sans-serif",
+                    fontSizeName: 30,
+                    fontSizeDesc: 18,
+                    fontSizePrice: 22,
+                    shadow: 10,
+                    brightness: 1.3,
+                    opacity: 1
+                },
+                country: {
+                    colorName: '#4e342e',
+                    colorDesc: '#4e342e',
+                    colorPrice: '#6d4c41',
+                    badgeBgColor: '#a1887f',
+                    bgColor: '#efebe9',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Cabin', sans-serif",
+                    fontSizeName: 24,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 18,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                provence: {
+                    colorName: '#4a148c',
+                    colorDesc: '#4a148c',
+                    colorPrice: '#6a1b9a',
+                    badgeBgColor: '#ce93d8',
+                    bgColor: '#f3e5f5',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Caveat', cursive",
+                    fontSizeName: 28,
+                    fontSizeDesc: 18,
+                    fontSizePrice: 20,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                hitech: {
+                    colorName: '#00e676',
+                    colorDesc: '#00e5ff',
+                    colorPrice: '#ffea00',
+                    badgeBgColor: '#ff3d00',
+                    bgColor: '#1a1a1a',
+                    bgOpacity: 0.6,
+                    fontFamily: "'Exo 2', sans-serif",
+                    fontSizeName: 30,
+                    fontSizeDesc: 18,
+                    fontSizePrice: 22,
+                    shadow: 8,
+                    brightness: 1.2,
+                    opacity: 1
+                },
+                eco: {
+                    colorName: '#2e7d32',
+                    colorDesc: '#2e7d32',
+                    colorPrice: '#1b5e20',
+                    badgeBgColor: '#66bb6a',
+                    bgColor: '#e8f5e9',
+                    bgOpacity: 0.7,
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSizeName: 26,
+                    fontSizeDesc: 16,
+                    fontSizePrice: 18,
+                    shadow: 6,
+                    brightness: 1,
+                    opacity: 0.95
+                },
+                artdeco: {
+                    colorName: '#ffd700',
+                    colorDesc: '#b8860b',
+                    colorPrice: '#ffd700',
+                    badgeBgColor: '#ffd700',
+                    bgColor: '#1a1a1a',
+                    bgOpacity: 0.6,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSizeName: 30,
+                    fontSizeDesc: 18,
+                    fontSizePrice: 24,
+                    shadow: 12,
+                    brightness: 1.2,
+                    opacity: 1
                 }
             };
 
@@ -2235,11 +2458,15 @@
                         block[key] = tmpl[key];
                     });
                 });
+                // Обновить поля в панели
                 fontFamily.value = tmpl.fontFamily;
                 fontSizeName.value = tmpl.fontSizeName;
-                fontSizeOther.value = tmpl.fontSizeOther;
+                colorName.value = tmpl.colorName;
+                fontSizeDesc.value = tmpl.fontSizeDesc;
+                colorDesc.value = tmpl.colorDesc;
                 fontSizePrice.value = tmpl.fontSizePrice;
-                textColor.value = tmpl.color;
+                colorPrice.value = tmpl.colorPrice;
+                badgeBgColor.value = tmpl.badgeBgColor;
                 shadowBlur.value = tmpl.shadow;
                 opacityBlock.value = tmpl.opacity;
                 opacityBlockValue.textContent = tmpl.opacity.toFixed(2);
@@ -2578,9 +2805,12 @@
                 settings.shape = editShape.value;
                 settings.fontFamily = fontFamily.value;
                 settings.fontSizeName = parseInt(fontSizeName.value) || 10;
-                settings.fontSizeOther = parseInt(fontSizeOther.value) || 8;
+                settings.colorName = colorName.value;
+                settings.fontSizeDesc = parseInt(fontSizeDesc.value) || 8;
+                settings.colorDesc = colorDesc.value;
                 settings.fontSizePrice = parseInt(fontSizePrice.value) || 8;
-                settings.color = textColor.value;
+                settings.colorPrice = colorPrice.value;
+                settings.badgeBgColor = badgeBgColor.value;
                 settings.shadow = parseInt(shadowBlur.value) || 0;
                 settings.opacity = parseFloat(opacityBlock.value) || 0;
                 settings.bgColor = bgColorBlock.value;
@@ -2631,7 +2861,7 @@
                 });
             });
 
-            // ======================== РЕАКТИВНОЕ ОБНОВЛЕНИЕ СТИЛЕЙ ========================
+            // ======================== РЕАКТИВНОЕ ОБНОВЛЕНИЕ ========================
             function debounce(func, wait) {
                 let timeout;
                 return function(...args) {
@@ -2645,9 +2875,12 @@
                 const settings = {
                     fontFamily: fontFamily.value,
                     fontSizeName: parseInt(fontSizeName.value) || 10,
-                    fontSizeOther: parseInt(fontSizeOther.value) || 8,
+                    colorName: colorName.value,
+                    fontSizeDesc: parseInt(fontSizeDesc.value) || 8,
+                    colorDesc: colorDesc.value,
                     fontSizePrice: parseInt(fontSizePrice.value) || 8,
-                    color: textColor.value,
+                    colorPrice: colorPrice.value,
+                    badgeBgColor: badgeBgColor.value,
                     shadow: parseInt(shadowBlur.value) || 0,
                     opacity: parseFloat(opacityBlock.value) || 0,
                     bgColor: bgColorBlock.value,
@@ -2662,7 +2895,7 @@
                 applyChangesToSelected(settings);
             }, 200);
 
-            [fontFamily, fontSizeName, fontSizeOther, fontSizePrice, textColor, shadowBlur,
+            [fontFamily, fontSizeName, colorName, fontSizeDesc, colorDesc, fontSizePrice, colorPrice, badgeBgColor, shadowBlur,
              opacityBlock, bgColorBlock, bgOpacityBlock, brightnessBlock, paddingBlock,
              borderType, borderColor, borderWidth, blurRadiusInput].forEach(el => {
                 el.addEventListener('input', reactiveUpdate);
