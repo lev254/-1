@@ -451,17 +451,9 @@
         .text-block.border-shadow { box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-style: none; }
         .text-block.border-glow { box-shadow: 0 0 20px rgba(245, 227, 122, 0.6); border-style: none; }
 
-        /* ----- НОВОЕ: стиль для размытия фона (исправлено для экспорта) ----- */
-        .text-block .blur-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;  /* был -1, теперь 0 для захвата html2canvas */
-            pointer-events: none;
-            border-radius: inherit;
-        }
+        /* ----- НОВОЕ: стиль для размытия через backdrop-filter ----- */
+        /* больше не нужен отдельный слой, размытие через backdrop-filter на самом блоке */
+
         .text-block .content-wrapper {
             position: relative;
             z-index: 1;
@@ -1545,21 +1537,24 @@
                     div.style.fontFamily = block.fontFamily || 'Georgia, serif';
                     div.style.textShadow = `0 2px ${block.shadow || 8}px rgba(0,0,0,0.9)`;
                     div.style.opacity = block.opacity ?? 1;
+
+                    // --- НОВАЯ ЛОГИКА РАЗМЫТИЯ через backdrop-filter ---
                     const bgColor = block.bgColor || '#000000';
                     const bgOp = block.bgOpacity ?? 0.35;
                     const blur = block.blurRadius || 0;
+
+                    // Устанавливаем фон (всегда через rgba)
+                    div.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
+
+                    // Если размытие > 0, применяем backdrop-filter
                     if (blur > 0) {
-                        // Создаём слой фона с размытием
-                        div.style.background = 'none';
-                        const bgLayer = document.createElement('div');
-                        bgLayer.className = 'blur-background';
-                        bgLayer.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
-                        bgLayer.style.filter = `blur(${blur}px)`;
-                        bgLayer.style.borderRadius = 'inherit';
-                        div.appendChild(bgLayer);
+                        div.style.backdropFilter = `blur(${blur}px)`;
+                        div.style.webkitBackdropFilter = `blur(${blur}px)`;
                     } else {
-                        div.style.background = `rgba(${hexToRgb(bgColor)}, ${bgOp})`;
+                        div.style.backdropFilter = 'none';
+                        div.style.webkitBackdropFilter = 'none';
                     }
+
                     div.style.filter = `brightness(${block.brightness ?? 1})`;
                     div.style.padding = block.padding || '8px 14px';
 
